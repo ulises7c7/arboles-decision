@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.control.cell.*?>
+<?import javafx.geometry.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<GridPane alignment="center" hgap="10" styleClass="root" vgap="10" GridPane.fillWidth="true"
+          xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="ar.com.utn.frre.grupo2.arboldecision.FXMLController">
+
+
+    <padding>
+        <Insets bottom="25" left="25" right="25" top="25" />
+    </padding>
+    <children>
+
+
+        <Button mnemonicParsing="false" onAction="#importarElementos" text="Importar elementos"
+                HBox.hgrow="ALWAYS"   maxWidth="Infinity"
+                GridPane.columnIndex="0"  GridPane.columnSpan="1" GridPane.rowIndex="0" >
+        </Button>
+
+        <TableView fx:id="elementosTable" GridPane.columnIndex="0" GridPane.columnSpan="1" GridPane.rowIndex="1">
+
+            <columns>
+                <TableColumn text="X">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="coordX" />
+                    </cellValueFactory>
+                </TableColumn>
+
+                <TableColumn text="Y">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="coordY" />
+                    </cellValueFactory>
+                </TableColumn>
+
+                <TableColumn text="Clase">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="clase" />
+                    </cellValueFactory>
+                </TableColumn>
+            </columns>
+
+
+
+        </TableView>
+
+
+
+
+        
+
+    </children>
+
+
+    <columnConstraints>
+        <ColumnConstraints />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints />
+        <RowConstraints />
+    </rowConstraints>
+
+
+
+</GridPane>
+
