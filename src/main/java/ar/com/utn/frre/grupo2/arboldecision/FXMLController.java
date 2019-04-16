@@ -4,14 +4,19 @@ import ar.com.utn.frre.grupo2.arboldecision.dao.ElementosDAO;
 import ar.com.utn.frre.grupo2.arboldecision.dto.ElementoDTO;
 import ar.com.utn.frre.grupo2.arboldecision.service.ArbolDecisionService;
 import java.io.File;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TableView;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.beanio.InvalidRecordException;
@@ -30,8 +35,13 @@ public class FXMLController implements Initializable {
 
     private final ResourceBundle mensajes = ResourceBundle.getBundle("strings/mensajes");
 
+    private BigDecimal factorScale = new BigDecimal(80);
+
     @FXML
     private TableView<ElementoDTO> elementosTable;
+
+    @FXML
+    private Canvas canvas;
 
     @FXML
     private void importarElementos() {
@@ -58,6 +68,7 @@ public class FXMLController implements Initializable {
         }
 
         recargarTablaPeriodos();
+        redraw();
     }
 
     private void informar(String titulo, String encabezado, String pregunta) {
@@ -69,7 +80,29 @@ public class FXMLController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        canvas.setHeight(500);
+        canvas.setWidth(500);
+    }
+
+    private void redraw() {
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        for (ElementoDTO elemento : elementos) {
+            if (elemento.getClase() == 1) {
+                gc.setFill(Color.BLUE);
+                gc.setStroke(null);
+                gc.fillRect(
+                        elemento.getCoordX().multiply(factorScale).setScale(0, RoundingMode.HALF_UP).longValue() - 2,
+                        -elemento.getCoordY().multiply(factorScale).setScale(0, RoundingMode.HALF_UP).longValue() - 2 + 500,
+                        5, 5);
+            } else {
+                gc.setFill(null);
+                gc.setStroke(Color.RED);
+                gc.strokeOval(
+                        elemento.getCoordX().multiply(factorScale).setScale(0, RoundingMode.HALF_UP).longValue() - 2,
+                        -elemento.getCoordY().multiply(factorScale).setScale(0, RoundingMode.HALF_UP).longValue() - 2 + 500,
+                        5, 5);
+            }
+        }
     }
 
     public Stage getStage() {
