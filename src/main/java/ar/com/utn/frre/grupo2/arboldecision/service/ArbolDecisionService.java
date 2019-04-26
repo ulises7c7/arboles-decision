@@ -6,6 +6,8 @@
 package ar.com.utn.frre.grupo2.arboldecision.service;
 
 import ar.com.utn.frre.grupo2.arboldecision.dto.ElementoDTO;
+import ar.com.utn.frre.grupo2.arboldecision.dto.NodoDTO;
+import ar.com.utn.frre.grupo2.arboldecision.dto.RangosDTO;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -20,6 +22,9 @@ import java.util.Set;
  * @author ulises
  */
 public class ArbolDecisionService {
+
+    private static final int EJE_X = 1;
+    private static final int EJE_Y = 2;
 
     /**
      * A partir de la lista de elementos pasados por parametro, devuelve la
@@ -79,8 +84,30 @@ public class ArbolDecisionService {
         return intermedios;
     }
 
-    private Integer claseTodosElementos(List<ElementoDTO> elementos) {
+    /**
+     * Obtiene la entropia del conjunto de elementos pasados como parametros
+     *
+     *
+     * @param elementos
+     * @return
+     */
+    private BigDecimal impurityEval1(List<ElementoDTO> elementos) {
+        throw new UnsupportedOperationException("Impurity eval 1 no implementada");
+    }
 
+    /**
+     * Obtiene la entropia resultante de particionar al cunjunto pasado como
+     * parametro al particionar de acuerdo a los parametros de particion
+     *
+     * @param elementos
+     * @return
+     */
+    private BigDecimal impurityEval2(List<ElementoDTO> elementos,
+            BigDecimal valorParticion, Integer ejeParticion) {
+        throw new UnsupportedOperationException("Impurity eval 2 no implementada");
+    }
+
+    private Integer claseTodosElementos(List<ElementoDTO> elementos) {
         if (!elementos.isEmpty()) {
             Integer claseTest = elementos.get(0).getClase();
             for (ElementoDTO elemento : elementos) {
@@ -92,5 +119,90 @@ public class ArbolDecisionService {
         }
         return null;
     }
+
+    private List<ElementoDTO> particionar(List<ElementoDTO> elementos,
+            BigDecimal valorParticion, Integer ejeParticion, Boolean obtenerMenores) {
+        throw new UnsupportedOperationException("Particionar conjuntos no implementado aun");
+    }
+
+    private RangosDTO generarRangoParticion() {
+        throw new UnsupportedOperationException("Generar rango de particion no implementado aun");
+    }
+
+    public void decisionTree(List<ElementoDTO> elementos, RangosDTO rangos, NodoDTO nodo, BigDecimal umbral) {
+        if (claseTodosElementos(elementos) != null) {
+            Integer claseHoja = claseTodosElementos(elementos);
+            nodo.setEsHoja(Boolean.TRUE);
+            nodo.setEsHojaPura(Boolean.TRUE);
+            nodo.setClaseHoja(claseHoja);
+
+            /*
+             * } else if ( A = 'vacío') {
+             *     //hacer T hoja de clase cj,
+             *     //con cj = clase mas frecuente en D
+             *
+             * el caso A = 'vacío' nunca se va a dar,
+             * a lo sumo obtendremos una partición pura
+             * con un unico elemento
+             */
+        } else {
+
+            BigDecimal valorDivision = null;
+            BigDecimal menorEntropia = null;
+            Integer ejeDivision = null;
+
+            BigDecimal entropiaTotal = impurityEval1(elementos);
+
+            //Obtengo la mejor particion para el eje X
+            for (BigDecimal particionX : rangos.getParticionesX()) {
+                BigDecimal entropiaParticion = impurityEval2(elementos, particionX, EJE_X);
+
+                if (menorEntropia == null
+                        || entropiaParticion.compareTo(menorEntropia) == -1) {
+                    menorEntropia = entropiaParticion;
+                    valorDivision = particionX;
+                    ejeDivision = EJE_X;
+                }
+            }
+
+            //Obtengo la menor particion para el eje Y
+            for (BigDecimal particionY : rangos.getParticionesY()) {
+                BigDecimal entropiaParticion = impurityEval2(elementos, particionY, EJE_Y);
+
+                if (menorEntropia == null
+                        || entropiaParticion.compareTo(menorEntropia) == -1) {
+                    menorEntropia = entropiaParticion;
+                    valorDivision = particionY;
+                    ejeDivision = EJE_Y;
+                }
+            }
+
+            if (entropiaTotal.subtract(menorEntropia).compareTo(umbral) == -1) {
+                //TODO: tratar este caso, se hace T nodo hoja de clase cj mas frecuente
+            } else {
+                //TODO: particionar conjunto D en dos y tratar cada "mitad"
+                nodo.setEsHoja(Boolean.FALSE);
+
+                List<ElementoDTO> particion1 = particionar(elementos, valorDivision, ejeDivision, Boolean.TRUE);
+                NodoDTO nodoParticion1 = new NodoDTO();
+
+                nodo.getHijos().add(nodoParticion1);
+
+                RangosDTO rangosParticion1 = generarRangoParticion();
+                decisionTree(particion1, rangosParticion1, nodoParticion1, umbral);
+
+                List<ElementoDTO> particion2 = particionar(elementos, valorDivision, ejeDivision, Boolean.FALSE);
+                //TODO: hacer lo mismo que con particion 1
+
+//                decisionTree(particion2, rangosParticion2, nodoParticion2, umbral);
+
+            }
+
+
+
+        }
+    }
+
+
 
 }
