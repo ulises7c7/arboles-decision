@@ -12,8 +12,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -41,7 +43,6 @@ public class ArbolDecisionService {
         }
 
         List<BigDecimal> list = new ArrayList<>(valoresX);
-
 
         Collections.sort(list, (a, b) -> a.compareTo(b));
         return list;
@@ -108,7 +109,8 @@ public class ArbolDecisionService {
     }
 
     private Integer claseTodosElementos(List<ElementoDTO> elementos) {
-        if (!elementos.isEmpty()) {
+
+        if (elementos != null && !elementos.isEmpty()) {
             Integer claseTest = elementos.get(0).getClase();
             for (ElementoDTO elemento : elementos) {
                 if (!Objects.equals(elemento.getClase(), claseTest)) {
@@ -116,6 +118,53 @@ public class ArbolDecisionService {
                 }
             }
             return claseTest;
+        }
+        return null;
+    }
+
+    /**
+     * Obtiene la clase mas frecuente del conjunto pasado como parametro
+     * Devuelve null si el conjunto es vacio o si no hay clase mas frecuente
+     *
+     * @param elementos
+     * @return
+     */
+    private Integer claseMasFrecuente(List<ElementoDTO> elementos) {
+        if (elementos != null && !elementos.isEmpty()) {
+            //Contiene los pares ( cj ; cj.count )
+            Map<Integer, Integer> conteoClases = new HashMap<>();
+
+            for (ElementoDTO elemento : elementos) {
+                Integer count = conteoClases.get(elemento.getClase());
+                if (count == null) {
+                    count = 0;
+                }
+                conteoClases.put(elemento.getClase(), count + 1);
+            }
+
+            if (conteoClases.keySet().size() == 1) {
+                //Si hay una sola clase, retorno la unica clase
+                return elementos.get(0).getClase();
+            }
+
+            List<Integer> values = new ArrayList(conteoClases.values());
+
+            Collections.sort(values, (a, b) -> b.compareTo(a));
+
+            // Si la primera y la segunda clase, ordenadas por su frecuencia,
+            // tienen el mismo valor, devuelvo null
+            // (no hay clase mas frecuente)
+            if (values.get(0).equals(values.get(1))) {
+                return null;
+            }
+
+            //Sino devuelvo la clase del elemento con la frcuencia maxima
+            for (Map.Entry<Integer, Integer> entry : conteoClases.entrySet()) {
+                if (Objects.equals(values.get(0), entry.getValue())) {
+                    return entry.getKey();
+                }
+            }
+
         }
         return null;
     }
@@ -136,15 +185,16 @@ public class ArbolDecisionService {
             nodo.setEsHojaPura(Boolean.TRUE);
             nodo.setClaseHoja(claseHoja);
 
-            /*
-             * } else if ( A = 'vacío') {
-             *     //hacer T hoja de clase cj,
-             *     //con cj = clase mas frecuente en D
-             *
-             * el caso A = 'vacío' nunca se va a dar,
-             * a lo sumo obtendremos una partición pura
-             * con un unico elemento
-             */
+        } else if (rangos.getParticionesX().isEmpty() && rangos.getParticionesY().isEmpty()) {
+            // Caso A = vacio
+            // T hoja de clase cj, con cj = clase mas frecuente en D
+
+            // Este caso se va a dar cuando haya varios puntos de
+            // distintas clases en la misma coordenada
+            nodo.setEsHoja(Boolean.TRUE);
+            nodo.setEsHojaPura(Boolean.FALSE);
+            nodo.setClaseHoja(claseMasFrecuente(elementos));
+
         } else {
 
             BigDecimal valorDivision = null;
@@ -195,14 +245,9 @@ public class ArbolDecisionService {
                 //TODO: hacer lo mismo que con particion 1
 
 //                decisionTree(particion2, rangosParticion2, nodoParticion2, umbral);
-
             }
-
-
 
         }
     }
-
-
 
 }

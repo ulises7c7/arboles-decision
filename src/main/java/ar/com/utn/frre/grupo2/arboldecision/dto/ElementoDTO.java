@@ -7,6 +7,7 @@ package ar.com.utn.frre.grupo2.arboldecision.dto;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.UUID;
 import org.beanio.annotation.Field;
 import org.beanio.annotation.Record;
 
@@ -18,6 +19,7 @@ import org.beanio.annotation.Record;
 public class ElementoDTO {
 
     public static final String RECORD_NAME = "elemento";
+    private final String uuid = UUID.randomUUID().toString();
 
     @Field(at = 0)
     private BigDecimal coordX;
@@ -52,10 +54,8 @@ public class ElementoDTO {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 23 * hash + Objects.hashCode(this.coordX);
-        hash = 23 * hash + Objects.hashCode(this.coordY);
-        hash = 23 * hash + Objects.hashCode(this.clase);
+        int hash = 7;
+        hash = 31 * hash + Objects.hashCode(this.uuid);
         return hash;
     }
 
@@ -71,13 +71,7 @@ public class ElementoDTO {
             return false;
         }
         final ElementoDTO other = (ElementoDTO) obj;
-        if (!Objects.equals(this.coordX, other.coordX)) {
-            return false;
-        }
-        if (!Objects.equals(this.coordY, other.coordY)) {
-            return false;
-        }
-        if (!Objects.equals(this.clase, other.clase)) {
+        if (!Objects.equals(this.uuid, other.uuid)) {
             return false;
         }
         return true;
