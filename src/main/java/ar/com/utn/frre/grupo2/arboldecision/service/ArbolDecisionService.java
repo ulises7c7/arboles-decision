@@ -72,7 +72,8 @@ public class ArbolDecisionService {
 
     /**
      * Obtiene los valores intermedios de la lista de numeros pasados como
-     * parametro
+     * parametro. Ademas agrega un valor a la izquierda y uno a la derecha del
+     * conjunto como cotas superior e inferior
      *
      * @param valores
      * @return
@@ -95,15 +96,8 @@ public class ArbolDecisionService {
      * @return
      */
     private BigDecimal impurityEval1(List<ElementoDTO> elementos) {
-        Map<Integer, Integer> countPorClase = new HashMap<>();
-
-        for (ElementoDTO elemento : elementos) {
-            Integer conteo = countPorClase.get(elemento.getClase());
-            if (conteo == null) {
-                conteo = 0;
-            }
-            countPorClase.put(elemento.getClase(), conteo++);
-        }
+        //Obtengo la cantidad de elementos por cada
+        Map<Integer, Integer> countPorClase = conteoPorClase(elementos);
 
         Collection<Integer> values = countPorClase.values();
 
@@ -120,6 +114,26 @@ public class ArbolDecisionService {
     }
 
     /**
+     * Devuelve un Map de dos enteros (clase, clase.count) con el conteo de cada
+     * clase de los elementos pasados por parametro
+     *
+     * @return
+     */
+    private Map<Integer, Integer> conteoPorClase(List<ElementoDTO> elementos) {
+
+        Map<Integer, Integer> countPorClase = new HashMap<>();
+
+        for (ElementoDTO elemento : elementos) {
+            Integer conteo = countPorClase.get(elemento.getClase());
+            if (conteo == null) {
+                conteo = 0;
+            }
+            countPorClase.put(elemento.getClase(), conteo++);
+        }
+        return countPorClase;
+    }
+
+    /**
      * Obtiene la entropia resultante de particionar al cunjunto pasado como
      * parametro al particionar de acuerdo a los parametros de particion
      *
@@ -128,7 +142,22 @@ public class ArbolDecisionService {
      */
     private BigDecimal impurityEval2(List<ElementoDTO> elementos,
             BigDecimal valorParticion, Integer ejeParticion) {
-        throw new UnsupportedOperationException("Impurity eval 2 no implementada");
+
+        List<ElementoDTO> elementos1 = particionar(elementos, valorParticion, ejeParticion, Boolean.TRUE);
+        List<ElementoDTO> elementos2 = particionar(elementos, valorParticion, ejeParticion, Boolean.FALSE);
+
+        BigDecimal sizeElementos = new BigDecimal(elementos.size());
+        BigDecimal sizeElementos1 = new BigDecimal(elementos1.size());
+        BigDecimal sizeElementos2 = new BigDecimal(elementos2.size());
+
+        BigDecimal entropia1 = impurityEval1(elementos1);
+        BigDecimal entropia2 = impurityEval1(elementos2);
+
+        return sizeElementos1.divide(sizeElementos, 4, RoundingMode.HALF_UP).multiply(entropia1).add(
+                sizeElementos2.divide(sizeElementos, 4, RoundingMode.HALF_UP).multiply(entropia2)
+        );
+
+
     }
 
     private BigDecimal logartimoBase2(BigDecimal numero) {
@@ -159,24 +188,16 @@ public class ArbolDecisionService {
      */
     private Integer claseMasFrecuente(List<ElementoDTO> elementos) {
         if (elementos != null && !elementos.isEmpty()) {
-            //Contiene los pares ( cj ; cj.count )
-            Map<Integer, Integer> conteoClases = new HashMap<>();
+            //Obtengo los pares ( cj ; cj.count )
+            Map<Integer, Integer> conteoClases = conteoPorClase(elementos);
 
-            for (ElementoDTO elemento : elementos) {
-                Integer count = conteoClases.get(elemento.getClase());
-                if (count == null) {
-                    count = 0;
-                }
-                conteoClases.put(elemento.getClase(), count + 1);
-            }
-
+            //Si hay una sola clase, retorno la unica clase
             if (conteoClases.keySet().size() == 1) {
-                //Si hay una sola clase, retorno la unica clase
                 return elementos.get(0).getClase();
             }
 
+            //Ordeno las clases de mayor a menor segun su frecuencia
             List<Integer> values = new ArrayList(conteoClases.values());
-
             Collections.sort(values, (a, b) -> b.compareTo(a));
 
             // Si la primera y la segunda clase, ordenadas por su frecuencia,
@@ -199,11 +220,59 @@ public class ArbolDecisionService {
 
     private List<ElementoDTO> particionar(List<ElementoDTO> elementos,
             BigDecimal valorParticion, Integer ejeParticion, Boolean obtenerMenores) {
-        throw new UnsupportedOperationException("Particionar conjuntos no implementado aun");
+
+        //Valor para usar en el compareTo entre la coordenada
+        //del elemento y la coordenada de particion
+        Integer valorComparacion = obtenerMenores ? -1 : 1;
+
+        List<ElementoDTO> subconjunto = new ArrayList<>();
+        for (ElementoDTO elemento : elementos) {
+            BigDecimal coordElemento = ejeParticion == EJE_X
+                    ? elemento.getCoordX()
+                    : elemento.getCoordY();
+
+            if (coordElemento.compareTo(valorParticion) == valorComparacion) {
+                subconjunto.add(elemento);
+            }
+        }
+
+        return subconjunto;
     }
 
-    private RangosDTO generarRangoParticion() {
-        throw new UnsupportedOperationException("Generar rango de particion no implementado aun");
+    private RangosDTO generarRangoParticion(RangosDTO rangosOriginales,
+            BigDecimal valorParticion, Integer ejeParticion, Boolean obtenerMenores) {
+        RangosDTO nuevosRangos = new RangosDTO();
+
+        Integer valorComparacion = obtenerMenores ? -1 : 1;
+
+        List<BigDecimal> valoresParticionOriginales = ejeParticion == EJE_X
+                ? rangosOriginales.getParticionesX()
+                : rangosOriginales.getParticionesY();
+
+        List<BigDecimal> valoresParticionNuevos = new ArrayList<>();
+
+        for (BigDecimal valor : valoresParticionOriginales) {
+            if (valor.compareTo(valorParticion) == valorComparacion
+                    || valor.compareTo(valorParticion) == 0) {
+                valoresParticionNuevos.add(valor);
+            }
+        }
+
+        // A Los valores del eje particionado, le asigno los nuevos valores obtenidos arriba
+        // A los valores del otro eje, los dejo como estaban en el rangoOriginal
+        if (ejeParticion == EJE_X) {
+            nuevosRangos.setParticionesX(valoresParticionNuevos);
+            nuevosRangos.setParticionesY(new ArrayList<>());
+            nuevosRangos.getParticionesY().addAll(rangosOriginales.getParticionesY());
+        } else {
+            nuevosRangos.setParticionesY(valoresParticionNuevos);
+            nuevosRangos.setParticionesX(new ArrayList<>());
+            nuevosRangos.getParticionesX().addAll(rangosOriginales.getParticionesX());
+        }
+
+
+        return nuevosRangos;
+
     }
 
     public void decisionTree(List<ElementoDTO> elementos, RangosDTO rangos, NodoDTO nodo, BigDecimal umbral) {
@@ -213,7 +282,7 @@ public class ArbolDecisionService {
             nodo.setEsHojaPura(Boolean.TRUE);
             nodo.setClaseHoja(claseHoja);
 
-        } else if (rangos.getParticionesX().isEmpty() && rangos.getParticionesY().isEmpty()) {
+        } else if (!rangos.esPosibleParticionarEnX() && !rangos.esPosibleParticionarEnY()) {
             // Caso A = vacio
             // T hoja de clase cj, con cj = clase mas frecuente en D
 
@@ -258,21 +327,21 @@ public class ArbolDecisionService {
             if (entropiaTotal.subtract(menorEntropia).compareTo(umbral) == -1) {
                 //TODO: tratar este caso, se hace T nodo hoja de clase cj mas frecuente
             } else {
-                //TODO: particionar conjunto D en dos y tratar cada "mitad"
                 nodo.setEsHoja(Boolean.FALSE);
 
+                //Tratar rama 1
                 List<ElementoDTO> particion1 = particionar(elementos, valorDivision, ejeDivision, Boolean.TRUE);
-                NodoDTO nodoParticion1 = new NodoDTO();
-
+                RangosDTO rangosParticion1 = generarRangoParticion(rangos, valorDivision, ejeDivision, Boolean.TRUE);
+                NodoDTO nodoParticion1 = new NodoDTO(nodo, valorDivision, ejeDivision, Boolean.TRUE, particion1, rangosParticion1);
                 nodo.getHijos().add(nodoParticion1);
-
-                RangosDTO rangosParticion1 = generarRangoParticion();
                 decisionTree(particion1, rangosParticion1, nodoParticion1, umbral);
 
+                //Tratar rama 2
                 List<ElementoDTO> particion2 = particionar(elementos, valorDivision, ejeDivision, Boolean.FALSE);
-                //TODO: hacer lo mismo que con particion 1
-
-//                decisionTree(particion2, rangosParticion2, nodoParticion2, umbral);
+                RangosDTO rangosParticion2 = generarRangoParticion(rangos, valorDivision, ejeDivision, Boolean.FALSE);
+                NodoDTO nodoParticion2 = new NodoDTO(nodo, valorDivision, ejeDivision, Boolean.FALSE, particion2, rangosParticion2);
+                nodo.getHijos().add(nodoParticion2);
+                decisionTree(particion2, rangosParticion2, nodoParticion2, umbral);
             }
 
         }

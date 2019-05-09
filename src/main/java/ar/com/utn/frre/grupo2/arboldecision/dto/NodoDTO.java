@@ -5,6 +5,7 @@
  */
 package ar.com.utn.frre.grupo2.arboldecision.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -18,6 +19,23 @@ public class NodoDTO {
     private Boolean esHoja;
     private Boolean esHojaPura;
     private Integer claseHoja;
+    private BigDecimal valorParticion;
+    private Integer ejeParticion;
+    private Boolean esRamaMenor;
+    private List<ElementoDTO> elementos;
+    private RangosDTO rangosDTO;
+
+    public NodoDTO() {
+    }
+
+    public NodoDTO(NodoDTO padre, BigDecimal valorParticion, Integer ejeParticion, Boolean esRamaMenor, List<ElementoDTO> elementos, RangosDTO rangosDTO) {
+        this.padre = padre;
+        this.valorParticion = valorParticion;
+        this.ejeParticion = ejeParticion;
+        this.esRamaMenor = esRamaMenor;
+        this.elementos = elementos;
+        this.rangosDTO = rangosDTO;
+    }
 
     public NodoDTO getPadre() {
         return padre;
@@ -57,6 +75,46 @@ public class NodoDTO {
 
     public void setClaseHoja(Integer claseHoja) {
         this.claseHoja = claseHoja;
+    }
+
+    public BigDecimal getValorParticion() {
+        return valorParticion;
+    }
+
+    public void setValorParticion(BigDecimal valorParticion) {
+        this.valorParticion = valorParticion;
+    }
+
+    public Integer getEjeParticion() {
+        return ejeParticion;
+    }
+
+    public void setEjeParticion(Integer ejeParticion) {
+        this.ejeParticion = ejeParticion;
+    }
+
+    public Boolean getEsRamaMenor() {
+        return esRamaMenor;
+    }
+
+    public void setEsRamaMenor(Boolean esRamaMenor) {
+        this.esRamaMenor = esRamaMenor;
+    }
+
+    public List<ElementoDTO> getElementos() {
+        return elementos;
+    }
+
+    public void setElementos(List<ElementoDTO> elementos) {
+        this.elementos = elementos;
+    }
+
+    public RangosDTO getRangosDTO() {
+        return rangosDTO;
+    }
+
+    public void setRangosDTO(RangosDTO rangosDTO) {
+        this.rangosDTO = rangosDTO;
     }
 
 

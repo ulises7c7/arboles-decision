@@ -17,11 +17,6 @@ public class RangosDTO {
     private List<BigDecimal> particionesX;
     private List<BigDecimal> particionesY;
 
-    private BigDecimal cotaInferiorX;
-    private BigDecimal cotaSuperiorX;
-
-    private BigDecimal cotaInferiorY;
-    private BigDecimal cotaSuperiorY;
 
     public List<BigDecimal> getParticionesX() {
         return particionesX;
@@ -39,36 +34,11 @@ public class RangosDTO {
         this.particionesY = particionesY;
     }
 
-    public BigDecimal getCotaInferiorX() {
-        return cotaInferiorX;
+    public boolean esPosibleParticionarEnX() {
+        return particionesX.size() > 2;
     }
-
-    public void setCotaInferiorX(BigDecimal cotaInferiorX) {
-        this.cotaInferiorX = cotaInferiorX;
-    }
-
-    public BigDecimal getCotaSuperiorX() {
-        return cotaSuperiorX;
-    }
-
-    public void setCotaSuperiorX(BigDecimal cotaSuperiorX) {
-        this.cotaSuperiorX = cotaSuperiorX;
-    }
-
-    public BigDecimal getCotaInferiorY() {
-        return cotaInferiorY;
-    }
-
-    public void setCotaInferiorY(BigDecimal cotaInferiorY) {
-        this.cotaInferiorY = cotaInferiorY;
-    }
-
-    public BigDecimal getCotaSuperiorY() {
-        return cotaSuperiorY;
-    }
-
-    public void setCotaSuperiorY(BigDecimal cotaSuperiorY) {
-        this.cotaSuperiorY = cotaSuperiorY;
+    public boolean esPosibleParticionarEnY() {
+        return particionesY.size() > 2;
     }
 
 
