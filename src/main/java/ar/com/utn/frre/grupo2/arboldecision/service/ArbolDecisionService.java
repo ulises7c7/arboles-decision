@@ -11,6 +11,7 @@ import ar.com.utn.frre.grupo2.arboldecision.dto.RangosDTO;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,6 +39,7 @@ public class ArbolDecisionService {
     public List<BigDecimal> obtenerValoresX(List<ElementoDTO> elementos) {
         Set<BigDecimal> valoresX = new HashSet<>();
 
+        //TODO: verificar esto
         for (ElementoDTO elemento : elementos) {
             valoresX.add(elemento.getCoordX());
         }
@@ -93,7 +95,28 @@ public class ArbolDecisionService {
      * @return
      */
     private BigDecimal impurityEval1(List<ElementoDTO> elementos) {
-        throw new UnsupportedOperationException("Impurity eval 1 no implementada");
+        Map<Integer, Integer> countPorClase = new HashMap<>();
+
+        for (ElementoDTO elemento : elementos) {
+            Integer conteo = countPorClase.get(elemento.getClase());
+            if (conteo == null) {
+                conteo = 0;
+            }
+            countPorClase.put(elemento.getClase(), conteo++);
+        }
+
+        Collection<Integer> values = countPorClase.values();
+
+        BigDecimal entropia = BigDecimal.ONE;
+        Integer cantElementos = elementos.size();
+
+        for (Integer conteoClase : values) {
+            BigDecimal probabilidadClase = new BigDecimal(conteoClase).divide(new BigDecimal(cantElementos), 4, RoundingMode.HALF_UP);
+            entropia = entropia.add(probabilidadClase.multiply(logartimoBase2(probabilidadClase)));
+            return entropia;
+        }
+
+        return entropia.negate();
     }
 
     /**
@@ -106,6 +129,11 @@ public class ArbolDecisionService {
     private BigDecimal impurityEval2(List<ElementoDTO> elementos,
             BigDecimal valorParticion, Integer ejeParticion) {
         throw new UnsupportedOperationException("Impurity eval 2 no implementada");
+    }
+
+    private BigDecimal logartimoBase2(BigDecimal numero) {
+        double logaritmo = Math.log10(numero.doubleValue()) / Math.log10(2d);
+        return BigDecimal.valueOf(logaritmo).setScale(4, RoundingMode.HALF_UP);
     }
 
     private Integer claseTodosElementos(List<ElementoDTO> elementos) {
