@@ -2,6 +2,8 @@ package ar.com.utn.frre.grupo2.arboldecision;
 
 import ar.com.utn.frre.grupo2.arboldecision.dao.ElementosDAO;
 import ar.com.utn.frre.grupo2.arboldecision.dto.ElementoDTO;
+import ar.com.utn.frre.grupo2.arboldecision.dto.NodoDTO;
+import ar.com.utn.frre.grupo2.arboldecision.dto.RangosDTO;
 import ar.com.utn.frre.grupo2.arboldecision.service.ArbolDecisionService;
 import java.io.File;
 import java.math.BigDecimal;
@@ -69,6 +71,19 @@ public class FXMLController implements Initializable {
 
         recargarTablaPeriodos();
         redraw();
+    }
+
+    @FXML
+    private void procesarElementos() {
+        RangosDTO rangos = arbolesService.generarRangoInicial(elementos);
+        NodoDTO nodoRaiz = new NodoDTO();
+        nodoRaiz.setElementos(elementos);
+        nodoRaiz.setRangosDTO(rangos);
+
+        //TODO: parametrizar
+        BigDecimal umbral = BigDecimal.ZERO;
+
+        arbolesService.decisionTree(elementos, rangos, nodoRaiz, umbral);
     }
 
     private void informar(String titulo, String encabezado, String pregunta) {

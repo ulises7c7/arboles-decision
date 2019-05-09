@@ -82,7 +82,7 @@ public class ArbolDecisionService {
         List<BigDecimal> intermedios = new ArrayList<>();
         intermedios.add(valores.get(0).subtract(new BigDecimal(0.01)));
         for (int i = 0; i < valores.size() - 1; i++) {
-            intermedios.add(valores.get(i).add(valores.get(i + 1).divide(new BigDecimal(2), valores.get(i).scale() + 1, RoundingMode.HALF_UP)));
+            intermedios.add(valores.get(i).add(valores.get(i + 1).divide(new BigDecimal(2), valores.get(i).scale() + 2, RoundingMode.HALF_UP)));
         }
         intermedios.add(valores.get(valores.size() - 1).add(new BigDecimal(0.01)));
         return intermedios;
@@ -128,7 +128,7 @@ public class ArbolDecisionService {
             if (conteo == null) {
                 conteo = 0;
             }
-            countPorClase.put(elemento.getClase(), conteo++);
+            countPorClase.put(elemento.getClase(), conteo + 1);
         }
         return countPorClase;
     }
@@ -156,7 +156,6 @@ public class ArbolDecisionService {
         return sizeElementos1.divide(sizeElementos, 4, RoundingMode.HALF_UP).multiply(entropia1).add(
                 sizeElementos2.divide(sizeElementos, 4, RoundingMode.HALF_UP).multiply(entropia2)
         );
-
 
     }
 
@@ -239,6 +238,18 @@ public class ArbolDecisionService {
         return subconjunto;
     }
 
+    public RangosDTO generarRangoInicial(List<ElementoDTO> elementos) {
+        RangosDTO rangos = new RangosDTO();
+
+        List<BigDecimal> valoresX = obtenerValoresX(elementos);
+        List<BigDecimal> valoresY = obtenerValoresY(elementos);
+
+        rangos.setParticionesX(obtenerValoresIntermedios(valoresX));
+        rangos.setParticionesY(obtenerValoresIntermedios(valoresY));
+
+        return rangos;
+    }
+
     private RangosDTO generarRangoParticion(RangosDTO rangosOriginales,
             BigDecimal valorParticion, Integer ejeParticion, Boolean obtenerMenores) {
         RangosDTO nuevosRangos = new RangosDTO();
@@ -270,7 +281,6 @@ public class ArbolDecisionService {
             nuevosRangos.getParticionesX().addAll(rangosOriginales.getParticionesX());
         }
 
-
         return nuevosRangos;
 
     }
@@ -301,7 +311,8 @@ public class ArbolDecisionService {
             BigDecimal entropiaTotal = impurityEval1(elementos);
 
             //Obtengo la mejor particion para el eje X
-            for (BigDecimal particionX : rangos.getParticionesX()) {
+            for (int i = 1; i < rangos.getParticionesX().size() - 1; i++) {
+                BigDecimal particionX = rangos.getParticionesX().get(i);
                 BigDecimal entropiaParticion = impurityEval2(elementos, particionX, EJE_X);
 
                 if (menorEntropia == null
@@ -313,7 +324,8 @@ public class ArbolDecisionService {
             }
 
             //Obtengo la menor particion para el eje Y
-            for (BigDecimal particionY : rangos.getParticionesY()) {
+            for (int i = 1; i < rangos.getParticionesY().size() - 1; i++) {
+                BigDecimal particionY = rangos.getParticionesY().get(i);
                 BigDecimal entropiaParticion = impurityEval2(elementos, particionY, EJE_Y);
 
                 if (menorEntropia == null
@@ -328,6 +340,7 @@ public class ArbolDecisionService {
                 //TODO: tratar este caso, se hace T nodo hoja de clase cj mas frecuente
             } else {
                 nodo.setEsHoja(Boolean.FALSE);
+                nodo.setHijos(new ArrayList<>());
 
                 //Tratar rama 1
                 List<ElementoDTO> particion1 = particionar(elementos, valorDivision, ejeDivision, Boolean.TRUE);
