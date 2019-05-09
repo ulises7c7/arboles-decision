@@ -82,7 +82,7 @@ public class ArbolDecisionService {
         List<BigDecimal> intermedios = new ArrayList<>();
         intermedios.add(valores.get(0).subtract(new BigDecimal(0.01)));
         for (int i = 0; i < valores.size() - 1; i++) {
-            intermedios.add(valores.get(i).add(valores.get(i + 1).divide(new BigDecimal(2), valores.get(i).scale() + 2, RoundingMode.HALF_UP)));
+            intermedios.add(valores.get(i).add(valores.get(i + 1)).divide(new BigDecimal(2), valores.get(i).scale() + 2, RoundingMode.HALF_UP));
         }
         intermedios.add(valores.get(valores.size() - 1).add(new BigDecimal(0.01)));
         return intermedios;
@@ -101,13 +101,12 @@ public class ArbolDecisionService {
 
         Collection<Integer> values = countPorClase.values();
 
-        BigDecimal entropia = BigDecimal.ONE;
+        BigDecimal entropia = BigDecimal.ZERO;
         Integer cantElementos = elementos.size();
 
         for (Integer conteoClase : values) {
             BigDecimal probabilidadClase = new BigDecimal(conteoClase).divide(new BigDecimal(cantElementos), 4, RoundingMode.HALF_UP);
             entropia = entropia.add(probabilidadClase.multiply(logartimoBase2(probabilidadClase)));
-            return entropia;
         }
 
         return entropia.negate();

@@ -17,7 +17,6 @@ public class RangosDTO {
     private List<BigDecimal> particionesX;
     private List<BigDecimal> particionesY;
 
-
     public List<BigDecimal> getParticionesX() {
         return particionesX;
     }
@@ -37,10 +36,26 @@ public class RangosDTO {
     public boolean esPosibleParticionarEnX() {
         return particionesX.size() > 2;
     }
+
     public boolean esPosibleParticionarEnY() {
         return particionesY.size() > 2;
     }
 
+    // Cotas del rango
+    public BigDecimal getCotaInferiorX() {
+        return particionesX.get(0);
+    }
 
+    public BigDecimal getCotaSuperiorX() {
+        return particionesX.get(particionesX.size() - 1);
+    }
+
+    public BigDecimal getCotaInferiorY() {
+        return particionesY.get(0);
+    }
+
+    public BigDecimal getCotaSuperiorY() {
+        return particionesY.get(particionesY.size() - 1);
+    }
 
 }

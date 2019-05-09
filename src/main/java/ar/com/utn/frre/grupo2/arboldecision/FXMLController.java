@@ -9,6 +9,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -84,6 +85,32 @@ public class FXMLController implements Initializable {
         BigDecimal umbral = BigDecimal.ZERO;
 
         arbolesService.decisionTree(elementos, rangos, nodoRaiz, umbral);
+
+        imprimirArbol(nodoRaiz);
+        System.out.println("Proceso finalizado!");
+    }
+
+    private void imprimirArbol(NodoDTO nodo) {
+
+        if (nodo.getEsHoja()) {
+            System.out.println(" - clase " + nodo.getClaseHoja() + " " + nodo.getElementos().size() + "u.");
+        } else {
+            for (NodoDTO hijos : nodo.getHijos()) {
+                System.out.print(armarTextoRama(hijos) + " # ");
+                imprimirArbol(hijos);
+            }
+        }
+
+    }
+
+    private String armarTextoRama(NodoDTO nodo) {
+        if (nodo.getEjeParticion() != null) {
+            String eje = nodo.getEjeParticion() == 1 ? "x" : "y";
+            String signo = nodo.getEsRamaMenor() ? "<" : ">";
+            String valor = NumberFormat.getNumberInstance().format(nodo.getValorParticion());
+            return String.format("%s %s %s", eje, signo, valor);
+        }
+        return "";
     }
 
     private void informar(String titulo, String encabezado, String pregunta) {
