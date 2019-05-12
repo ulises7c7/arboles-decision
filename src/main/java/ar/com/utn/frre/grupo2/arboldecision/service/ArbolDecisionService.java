@@ -26,8 +26,8 @@ import java.util.Set;
  */
 public class ArbolDecisionService {
 
-    private static final int EJE_X = 1;
-    private static final int EJE_Y = 2;
+    public static final int EJE_X = 1;
+    public static final int EJE_Y = 2;
 
     /**
      * A partir de la lista de elementos pasados por parametro, devuelve la
