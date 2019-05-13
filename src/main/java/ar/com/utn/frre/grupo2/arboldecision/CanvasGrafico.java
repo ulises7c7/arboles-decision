@@ -22,9 +22,10 @@ import javafx.scene.paint.Paint;
  */
 public class CanvasGrafico extends Canvas {
 
-    private BigDecimal factorScale = new BigDecimal(80);
+    private double factorScale = 80;
     private GraphicsContext gc;
-    private Integer margen = 300;
+    private double offsetY = 300;
+    private double offsetX = 50;
 
 
     private NodoDTO nodoRaiz;
@@ -40,12 +41,8 @@ public class CanvasGrafico extends Canvas {
         });
 
         this.setOnScroll((event) -> {
-            double zoomFactor = 1.05;
-            double deltaY = event.getDeltaY();
-            if (deltaY > 0) {
-                zoomFactor = 2.0 - zoomFactor;
-            }
-            factorScale = factorScale.multiply(new BigDecimal(2 - zoomFactor));
+
+            scrollZoom(event.getDeltaY(), event.getSceneX(), event.getSceneY());
 
             redraw();
         });
@@ -63,6 +60,25 @@ public class CanvasGrafico extends Canvas {
         dibujarEjes();
 
     }
+
+    private void scrollZoom(double deltaY, double xCursor, double yCursor) {
+        double zoomFactor = 1.05;
+        if (deltaY > 0) {
+            zoomFactor = 2.0 - zoomFactor;
+        }
+
+        BigDecimal xReal = traducirX(xCursor - this.getLayoutX());
+        BigDecimal yReal = traducirY(yCursor - this.getLayoutY());
+
+        factorScale = factorScale * (2 - zoomFactor);
+
+        double corregirX = corregirX(xReal);
+        double corregirY = corregirY(yReal);
+
+        offsetX = offsetX + xCursor - this.getLayoutX() - corregirX;
+        offsetY = offsetY + yCursor - this.getLayoutY() - corregirY;
+    }
+
 
     private void dibujarParticiones(NodoDTO nodo) {
         if (nodo != null && nodo.getHijos() != null && !nodo.getHijos().isEmpty()) {
@@ -105,14 +121,22 @@ public class CanvasGrafico extends Canvas {
 
     }
 
-    private Long corregirX(BigDecimal coordX) {
-        return coordX.multiply(factorScale).setScale(0, RoundingMode.HALF_UP).longValue();
+
+    private double corregirX(BigDecimal coordX) {
+        return coordX.multiply(new BigDecimal(factorScale)).setScale(0, RoundingMode.HALF_UP).longValue() + offsetX;
     }
 
-    private Long corregirY(BigDecimal coordY) {
-        return -coordY.multiply(factorScale).setScale(0, RoundingMode.HALF_UP).longValue() + margen;
+    private double corregirY(BigDecimal coordY) {
+        return -coordY.multiply(new BigDecimal(factorScale)).setScale(0, RoundingMode.HALF_UP).longValue() + offsetY;
     }
 
+    private BigDecimal traducirX(double x) {
+        return new BigDecimal((x - offsetX) / factorScale);
+    }
+
+    private BigDecimal traducirY(double y) {
+        return new BigDecimal((offsetY - y) / factorScale);
+    }
 
     public void redraw() {
         pintarFondo();

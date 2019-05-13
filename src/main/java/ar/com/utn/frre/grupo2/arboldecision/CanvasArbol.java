@@ -65,13 +65,18 @@ public class CanvasArbol extends Canvas {
     private void dibujarAristas(NodoDTO nodo) {
         if (nodo.getPadre() != null) {
 
+            //Centro nodo padre
             double x1 = calcularNodoCoordX(nodo.getPadre().getCamino());
             double y1 = calcularNodoCoordY(nodo.getPadre().getNivel(), nivelesCount);
+
+            //centro nodo actual
             double x2 = calcularNodoCoordX(nodo.getCamino());
             double y2 = calcularNodoCoordY(nodo.getNivel(), nivelesCount);
 
+            //Posicion del texto, si la rama va a la izquierda o derecha
+            //se suman unos pixeles en y para que los textos no se superpongan
             double xMid = (x1 + x2) / 2;
-            double yMid = ((y1 + y2) / 2) + (nodo.getEsRamaMenor() ? -3 : 3);
+            double yMid = ((y1 + y2) / 2) + (nodo.getEsRamaMenor() ? -5 : 5);
 
             dibujarTexto(armarTextoRama(nodo), xMid, yMid);
             dibujarArista(x1, y1, x2, y2);
@@ -88,7 +93,7 @@ public class CanvasArbol extends Canvas {
         gc.setTextBaseline(VPos.CENTER);
         gc.setFill(SolarizedColors.BASE03);
         gc.setStroke(SolarizedColors.BASE03);
-        gc.setFont(new Font(gc.getFont().getName(), 7));
+        gc.setFont(new Font(gc.getFont().getName(), 9));
 
         gc.strokeText(texto, x, y);
     }
