@@ -88,6 +88,38 @@ public class ArbolDecisionService {
         return intermedios;
     }
 
+    private List<BigDecimal> obtenerValoresIntermediosY(List<ElementoDTO> elementos) {
+        Set<BigDecimal> valoresY = new HashSet<>();
+        elementos.forEach((elemento) -> {
+            valoresY.add(elemento.getCoordY());
+        });
+
+        List<BigDecimal> list = new ArrayList<>(valoresY);
+        Collections.sort(list, (a, b) -> a.compareTo(b));
+        List<BigDecimal> intermedios = new ArrayList<>();
+
+        for (int i = 0; i < list.size() - 1; i++) {
+            intermedios.add(list.get(i).add(list.get(i + 1)).divide(new BigDecimal(2), list.get(i).scale() + 2, RoundingMode.HALF_UP));
+        }
+        return intermedios;
+    }
+
+    private List<BigDecimal> obtenerValoresIntermediosX(List<ElementoDTO> elementos) {
+        Set<BigDecimal> valoresX = new HashSet<>();
+        elementos.forEach((elemento) -> {
+            valoresX.add(elemento.getCoordX());
+        });
+
+        List<BigDecimal> list = new ArrayList<>(valoresX);
+        Collections.sort(list, (a, b) -> a.compareTo(b));
+        List<BigDecimal> intermedios = new ArrayList<>();
+
+        for (int i = 0; i < list.size() - 1; i++) {
+            intermedios.add(list.get(i).add(list.get(i + 1)).divide(new BigDecimal(2), list.get(i).scale() + 2, RoundingMode.HALF_UP));
+        }
+        return intermedios;
+    }
+
     /**
      * Obtiene la entropia del conjunto de elementos pasados como parametros
      *
@@ -250,7 +282,7 @@ public class ArbolDecisionService {
     }
 
     private RangosDTO generarRangoParticion(RangosDTO rangosOriginales,
-            BigDecimal valorParticion, Integer ejeParticion, Boolean obtenerMenores) {
+            BigDecimal valorParticion, Integer ejeParticion, Boolean obtenerMenores, List<ElementoDTO> elementos) {
         RangosDTO nuevosRangos = new RangosDTO();
 
         Integer valorComparacion = obtenerMenores ? -1 : 1;
@@ -269,15 +301,19 @@ public class ArbolDecisionService {
         }
 
         // A Los valores del eje particionado, le asigno los nuevos valores obtenidos arriba
-        // A los valores del otro eje, los dejo como estaban en el rangoOriginal
+        // Para los valores del otro eje, dejo las cotas superior e inferior y vuelvo a calcular los puntos intermedios de los elementos de la particion actual
         if (ejeParticion == EJE_X) {
             nuevosRangos.setParticionesX(valoresParticionNuevos);
             nuevosRangos.setParticionesY(new ArrayList<>());
-            nuevosRangos.getParticionesY().addAll(rangosOriginales.getParticionesY());
+            nuevosRangos.getParticionesY().add(rangosOriginales.getCotaInferiorY());
+            nuevosRangos.getParticionesY().addAll(obtenerValoresIntermediosY(elementos));
+            nuevosRangos.getParticionesY().add(rangosOriginales.getCotaSuperiorY());
         } else {
             nuevosRangos.setParticionesY(valoresParticionNuevos);
             nuevosRangos.setParticionesX(new ArrayList<>());
-            nuevosRangos.getParticionesX().addAll(rangosOriginales.getParticionesX());
+            nuevosRangos.getParticionesX().add(rangosOriginales.getCotaInferiorX());
+            nuevosRangos.getParticionesX().addAll(obtenerValoresIntermediosX(elementos));
+            nuevosRangos.getParticionesX().add(rangosOriginales.getCotaSuperiorX());
         }
 
         return nuevosRangos;
@@ -343,14 +379,14 @@ public class ArbolDecisionService {
 
                 //Tratar rama 1
                 List<ElementoDTO> particion1 = particionar(elementos, valorDivision, ejeDivision, Boolean.TRUE);
-                RangosDTO rangosParticion1 = generarRangoParticion(rangos, valorDivision, ejeDivision, Boolean.TRUE);
+                RangosDTO rangosParticion1 = generarRangoParticion(rangos, valorDivision, ejeDivision, Boolean.TRUE, particion1);
                 NodoDTO nodoParticion1 = new NodoDTO(nodo, valorDivision, ejeDivision, Boolean.TRUE, particion1, rangosParticion1);
                 nodo.getHijos().add(nodoParticion1);
                 decisionTree(particion1, rangosParticion1, nodoParticion1, umbral);
 
                 //Tratar rama 2
                 List<ElementoDTO> particion2 = particionar(elementos, valorDivision, ejeDivision, Boolean.FALSE);
-                RangosDTO rangosParticion2 = generarRangoParticion(rangos, valorDivision, ejeDivision, Boolean.FALSE);
+                RangosDTO rangosParticion2 = generarRangoParticion(rangos, valorDivision, ejeDivision, Boolean.FALSE, particion2);
                 NodoDTO nodoParticion2 = new NodoDTO(nodo, valorDivision, ejeDivision, Boolean.FALSE, particion2, rangosParticion2);
                 nodo.getHijos().add(nodoParticion2);
                 decisionTree(particion2, rangosParticion2, nodoParticion2, umbral);
