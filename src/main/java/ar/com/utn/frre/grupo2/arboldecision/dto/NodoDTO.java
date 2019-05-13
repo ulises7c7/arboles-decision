@@ -6,6 +6,7 @@
 package ar.com.utn.frre.grupo2.arboldecision.dto;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +25,8 @@ public class NodoDTO {
     private Boolean esRamaMenor;
     private List<ElementoDTO> elementos;
     private RangosDTO rangosDTO;
+    private Integer nivel;
+    private List<Integer> camino = new ArrayList<>();
 
     public NodoDTO() {
     }
@@ -35,6 +38,11 @@ public class NodoDTO {
         this.esRamaMenor = esRamaMenor;
         this.elementos = elementos;
         this.rangosDTO = rangosDTO;
+
+        //Los siguientes atributos son utilizados para el diagrama
+        this.nivel = padre.getNivel() + 1;
+        this.camino.addAll(padre.getCamino());
+        this.camino.add(esRamaMenor ? -1 : 1);
     }
 
     public NodoDTO getPadre() {
@@ -117,6 +125,21 @@ public class NodoDTO {
         this.rangosDTO = rangosDTO;
     }
 
+    public Integer getNivel() {
+        return nivel;
+    }
+
+    public void setNivel(Integer nivel) {
+        this.nivel = nivel;
+    }
+
+    public List<Integer> getCamino() {
+        return camino;
+    }
+
+    public void setCamino(List<Integer> camino) {
+        this.camino = camino;
+    }
 
 
 

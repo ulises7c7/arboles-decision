@@ -5,6 +5,8 @@
  */
 package ar.com.utn.frre.grupo2.arboldecision;
 
+import java.util.Arrays;
+import java.util.List;
 import javafx.scene.paint.Color;
 
 /**
@@ -29,5 +31,19 @@ public class SolarizedColors {
     public static final Color BLUE = Color.web("#268bd2");
     public static final Color CYAN = Color.web("#2aa198");
     public static final Color GREEN = Color.web("#859900");
+
+    private static final List<Color> COLORES = Arrays.asList(
+            SolarizedColors.CYAN,
+            SolarizedColors.BLUE,
+            SolarizedColors.RED,
+            SolarizedColors.YELLOW,
+            SolarizedColors.ORANGE,
+            SolarizedColors.GREEN,
+            SolarizedColors.VIOLET,
+            SolarizedColors.MAGENTA); //TODO: generalizar esto para n clases
+
+    public static Color getColorByClase(Integer clase) {
+        return COLORES.get(clase % 8);
+    }
 
 }

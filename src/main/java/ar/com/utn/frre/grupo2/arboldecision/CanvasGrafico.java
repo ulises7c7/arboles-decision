@@ -10,7 +10,6 @@ import ar.com.utn.frre.grupo2.arboldecision.dto.NodoDTO;
 import ar.com.utn.frre.grupo2.arboldecision.service.ArbolDecisionService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Arrays;
 import java.util.List;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -26,15 +25,7 @@ public class CanvasGrafico extends Canvas {
     private BigDecimal factorScale = new BigDecimal(80);
     private GraphicsContext gc;
     private Integer margen = 300;
-    private List<Paint> colores = Arrays.asList(
-            SolarizedColors.BASE3,
-            SolarizedColors.BLUE,
-            SolarizedColors.RED,
-            SolarizedColors.YELLOW,
-            SolarizedColors.ORANGE,
-            SolarizedColors.GREEN,
-            SolarizedColors.VIOLET,
-            SolarizedColors.MAGENTA); //TODO: generalizar esto para n clases
+
 
     private NodoDTO nodoRaiz;
     private List<ElementoDTO> elementos;
@@ -51,7 +42,6 @@ public class CanvasGrafico extends Canvas {
         this.setOnScroll((event) -> {
             double zoomFactor = 1.05;
             double deltaY = event.getDeltaY();
-            System.out.println("Delta Y: " + deltaY);
             if (deltaY > 0) {
                 zoomFactor = 2.0 - zoomFactor;
             }
@@ -138,7 +128,8 @@ public class CanvasGrafico extends Canvas {
     private void dibujarPuntos() {
         if (elementos != null) {
             for (ElementoDTO elemento : elementos) {
-                dibujarPunto(elemento.getCoordX(), elemento.getCoordY(), colores.get(elemento.getClase()));
+                dibujarPunto(elemento.getCoordX(), elemento.getCoordY(),
+                        SolarizedColors.getColorByClase(elemento.getClase()));
             }
         }
     }
