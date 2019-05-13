@@ -40,10 +40,10 @@ public class FXMLController implements Initializable {
     private TableView<ElementoDTO> elementosTable;
 
     @FXML
-    private Canvas canvas;
+    private CanvasGrafico canvas;
     @FXML
     private Canvas canvasArbol;
-    private CanvasGraficoController canvasGraficoController;
+
 
     @FXML
     private void importarElementos() {
@@ -71,7 +71,7 @@ public class FXMLController implements Initializable {
         }
 
         recargarTablaPeriodos();
-        canvasGraficoController.redraw(nodoRaiz, elementos);
+        canvas.redraw(nodoRaiz, elementos);
     }
 
     @FXML
@@ -87,7 +87,7 @@ public class FXMLController implements Initializable {
         arbolesService.decisionTree(elementos, rangos, nodoRaiz, umbral);
 
         imprimirArbol(nodoRaiz);
-        canvasGraficoController.redraw(nodoRaiz, elementos);
+        canvas.redraw(nodoRaiz, elementos);
         System.out.println("Proceso finalizado!");
     }
 
@@ -124,7 +124,7 @@ public class FXMLController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        canvasGraficoController = new CanvasGraficoController(canvas, elementos, nodoRaiz);
+        canvas.inicializar(elementos, nodoRaiz);
     }
 
 

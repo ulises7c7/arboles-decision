@@ -21,9 +21,8 @@ import javafx.scene.paint.Paint;
  *
  * @author ulises
  */
-public class CanvasGraficoController {
+public class CanvasGrafico extends Canvas {
 
-    private Canvas canvas;
     private BigDecimal factorScale = new BigDecimal(80);
     private GraphicsContext gc;
     private Integer margen = 300;
@@ -32,19 +31,22 @@ public class CanvasGraficoController {
     private NodoDTO nodoRaiz;
     private List<ElementoDTO> elementos;
 
-    public CanvasGraficoController(Canvas canvas, List<ElementoDTO> elementos, NodoDTO nodoRaiz) {
+    public CanvasGrafico() {
+        super();
+    }
 
-        this.canvas = canvas;
+    public void inicializar(List<ElementoDTO> elementos, NodoDTO nodoRaiz) {
+
         this.elementos = elementos;
         this.nodoRaiz = nodoRaiz;
 
-        canvas.setHeight(400);
-        canvas.setWidth(300);
-        canvas.setOnMouseExited((event) -> {
+        this.setHeight(400);
+        this.setWidth(300);
+        this.setOnMouseExited((event) -> {
             redraw();
         });
 
-        canvas.setOnScroll((event) -> {
+        this.setOnScroll((event) -> {
             double zoomFactor = 1.05;
             double deltaY = event.getDeltaY();
             System.out.println("Delta Y: " + deltaY);
@@ -56,15 +58,15 @@ public class CanvasGraficoController {
             redraw();
         });
 
-        canvas.setOnMouseMoved((event) -> {
+        this.setOnMouseMoved((event) -> {
             redraw();
             gc.setStroke(Color.color(SolarizedColors.BASE3.getRed(), SolarizedColors.BASE3.getGreen(), SolarizedColors.BASE3.getBlue(), 0.5));
             gc.setLineWidth(0.5);
-            gc.strokeLine(event.getSceneX() - canvas.getLayoutX(), 0, event.getSceneX() - canvas.getLayoutX(), canvas.getHeight());
-            gc.strokeLine(0, event.getSceneY() - canvas.getLayoutY(), canvas.getWidth(), event.getSceneY() - canvas.getLayoutY());
+            gc.strokeLine(event.getSceneX() - this.getLayoutX(), 0, event.getSceneX() - this.getLayoutX(), this.getHeight());
+            gc.strokeLine(0, event.getSceneY() - this.getLayoutY(), this.getWidth(), event.getSceneY() - this.getLayoutY());
 
         });
-        gc = canvas.getGraphicsContext2D();
+        gc = this.getGraphicsContext2D();
 
     }
 
@@ -97,9 +99,9 @@ public class CanvasGraficoController {
         gc.setStroke(Color.color(SolarizedColors.BASE3.getRed(), SolarizedColors.BASE3.getGreen(), SolarizedColors.BASE3.getBlue(), 0.8));
         gc.setLineWidth(0.5);
         //EJE X
-        gc.strokeLine(corregirX(BigDecimal.ZERO), 0, corregirX(BigDecimal.ZERO), canvas.getHeight());
+        gc.strokeLine(corregirX(BigDecimal.ZERO), 0, corregirX(BigDecimal.ZERO), this.getHeight());
         //EJE Y
-        gc.strokeLine(0, corregirY(BigDecimal.ZERO), canvas.getWidth(), corregirY(BigDecimal.ZERO));
+        gc.strokeLine(0, corregirY(BigDecimal.ZERO), this.getWidth(), corregirY(BigDecimal.ZERO));
     }
 
     private void dibujarPunto(BigDecimal coordX, BigDecimal coordY, Paint color, GraphicsContext gc) {
@@ -128,7 +130,7 @@ public class CanvasGraficoController {
 
         //Pinto el fondo
         gc.setFill(SolarizedColors.BASE03);
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        gc.fillRect(0, 0, this.getWidth(), this.getHeight());
 
         //Pintar ejes
         dibujarEjes(gc);

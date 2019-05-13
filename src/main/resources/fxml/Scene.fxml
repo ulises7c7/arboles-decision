@@ -2,6 +2,7 @@
 
 <?import java.lang.*?>
 <?import java.util.*?>
+<?import ar.com.utn.frre.grupo2.arboldecision.CanvasGrafico?>
 <?import javafx.scene.*?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.*?>
@@ -59,9 +60,9 @@
                 GridPane.columnIndex="1"  GridPane.columnSpan="1" GridPane.rowIndex="0" >
         </Button>
 
-        <Canvas fx:id="canvas"  GridPane.columnIndex="1"  GridPane.rowSpan="1" GridPane.columnSpan="1" GridPane.rowIndex="1">
+        <CanvasGrafico fx:id="canvas"  GridPane.columnIndex="1"  GridPane.rowSpan="1" GridPane.columnSpan="1" GridPane.rowIndex="1">
 
-        </Canvas>
+        </CanvasGrafico>
 
         <Canvas fx:id="canvasArbol"  GridPane.columnIndex="2"  GridPane.rowSpan="1" GridPane.columnSpan="1" GridPane.rowIndex="1">
 
