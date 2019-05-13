@@ -26,19 +26,21 @@ public class CanvasGrafico extends Canvas {
     private BigDecimal factorScale = new BigDecimal(80);
     private GraphicsContext gc;
     private Integer margen = 300;
-    private List<Paint> colores = Arrays.asList(SolarizedColors.BASE3, SolarizedColors.BLUE, SolarizedColors.RED); //TODO: generalizar esto para n clases
+    private List<Paint> colores = Arrays.asList(
+            SolarizedColors.BASE3,
+            SolarizedColors.BLUE,
+            SolarizedColors.RED,
+            SolarizedColors.YELLOW,
+            SolarizedColors.ORANGE,
+            SolarizedColors.GREEN,
+            SolarizedColors.VIOLET,
+            SolarizedColors.MAGENTA); //TODO: generalizar esto para n clases
 
     private NodoDTO nodoRaiz;
     private List<ElementoDTO> elementos;
 
     public CanvasGrafico() {
         super();
-    }
-
-    public void inicializar(List<ElementoDTO> elementos, NodoDTO nodoRaiz) {
-
-        this.elementos = elementos;
-        this.nodoRaiz = nodoRaiz;
 
         this.setHeight(400);
         this.setWidth(300);
@@ -67,10 +69,12 @@ public class CanvasGrafico extends Canvas {
 
         });
         gc = this.getGraphicsContext2D();
+        pintarFondo();
+        dibujarEjes();
 
     }
 
-    private void dibujarParticiones(NodoDTO nodo, GraphicsContext gc) {
+    private void dibujarParticiones(NodoDTO nodo) {
         if (nodo != null && nodo.getHijos() != null && !nodo.getHijos().isEmpty()) {
 
             for (NodoDTO hijo : nodo.getHijos()) {
@@ -79,23 +83,23 @@ public class CanvasGrafico extends Canvas {
                 BigDecimal fin = hijo.getEjeParticion() == ArbolDecisionService.EJE_X ? hijo.getRangosDTO().getCotaSuperiorY() : hijo.getRangosDTO().getCotaSuperiorX();
 
                 if (hijo.getEjeParticion() == ArbolDecisionService.EJE_X) {
-                    dibujarRecta(coordenadaParticion, inicio, coordenadaParticion, fin, gc);
+                    dibujarRecta(coordenadaParticion, inicio, coordenadaParticion, fin);
                 } else {
-                    dibujarRecta(inicio, coordenadaParticion, fin, coordenadaParticion, gc);
+                    dibujarRecta(inicio, coordenadaParticion, fin, coordenadaParticion);
                 }
 
-                dibujarParticiones(hijo, gc);
+                dibujarParticiones(hijo);
             }
         }
     }
 
-    private void dibujarRecta(BigDecimal coordX1, BigDecimal coordY1, BigDecimal coordX2, BigDecimal coordY2, GraphicsContext gc) {
+    private void dibujarRecta(BigDecimal coordX1, BigDecimal coordY1, BigDecimal coordX2, BigDecimal coordY2) {
         gc.setStroke(SolarizedColors.BASE3);
         gc.setLineWidth(1);
         gc.strokeLine(corregirX(coordX1), corregirY(coordY1), corregirX(coordX2), corregirY(coordY2));
     }
 
-    private void dibujarEjes(GraphicsContext gc) {
+    private void dibujarEjes() {
         gc.setStroke(Color.color(SolarizedColors.BASE3.getRed(), SolarizedColors.BASE3.getGreen(), SolarizedColors.BASE3.getBlue(), 0.8));
         gc.setLineWidth(0.5);
         //EJE X
@@ -104,7 +108,7 @@ public class CanvasGrafico extends Canvas {
         gc.strokeLine(0, corregirY(BigDecimal.ZERO), this.getWidth(), corregirY(BigDecimal.ZERO));
     }
 
-    private void dibujarPunto(BigDecimal coordX, BigDecimal coordY, Paint color, GraphicsContext gc) {
+    private void dibujarPunto(BigDecimal coordX, BigDecimal coordY, Paint color) {
         gc.setStroke(color);
         gc.setLineWidth(3);
         gc.strokeLine(corregirX(coordX), corregirY(coordY), corregirX(coordX), corregirY(coordY));
@@ -119,31 +123,45 @@ public class CanvasGrafico extends Canvas {
         return -coordY.multiply(factorScale).setScale(0, RoundingMode.HALF_UP).longValue() + margen;
     }
 
+
     public void redraw() {
-        redraw(nodoRaiz, elementos);
-    }
-
-    public void redraw(NodoDTO nodoRaiz, List<ElementoDTO> elementos) {
-
-        this.nodoRaiz = nodoRaiz;
-        this.elementos = elementos;
-
-        //Pinto el fondo
-        gc.setFill(SolarizedColors.BASE03);
-        gc.fillRect(0, 0, this.getWidth(), this.getHeight());
-
-        //Pintar ejes
-        dibujarEjes(gc);
+        pintarFondo();
+        dibujarEjes();
 
         //Dibujar divisiones (Si el algoritmo ya fue ejecutado)
-        dibujarParticiones(nodoRaiz, gc);
+        dibujarParticiones(nodoRaiz);
 
-        //Dibujar puntos
-        for (ElementoDTO elemento : elementos) {
-            dibujarPunto(elemento.getCoordX(), elemento.getCoordY(), colores.get(elemento.getClase()), gc);
-        }
+        dibujarPuntos();
 
     }
 
+    private void dibujarPuntos() {
+        if (elementos != null) {
+            for (ElementoDTO elemento : elementos) {
+                dibujarPunto(elemento.getCoordX(), elemento.getCoordY(), colores.get(elemento.getClase()));
+            }
+        }
+    }
+
+    private void pintarFondo() {
+        gc.setFill(SolarizedColors.BASE03);
+        gc.fillRect(0, 0, this.getWidth(), this.getHeight());
+    }
+
+    public NodoDTO getNodoRaiz() {
+        return nodoRaiz;
+    }
+
+    public void setNodoRaiz(NodoDTO nodoRaiz) {
+        this.nodoRaiz = nodoRaiz;
+    }
+
+    public List<ElementoDTO> getElementos() {
+        return elementos;
+    }
+
+    public void setElementos(List<ElementoDTO> elementos) {
+        this.elementos = elementos;
+    }
 
 }

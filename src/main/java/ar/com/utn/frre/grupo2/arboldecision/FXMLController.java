@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
@@ -42,7 +41,7 @@ public class FXMLController implements Initializable {
     @FXML
     private CanvasGrafico canvas;
     @FXML
-    private Canvas canvasArbol;
+    private CanvasArbol canvasArbol;
 
 
     @FXML
@@ -71,7 +70,9 @@ public class FXMLController implements Initializable {
         }
 
         recargarTablaPeriodos();
-        canvas.redraw(nodoRaiz, elementos);
+        canvas.setNodoRaiz(nodoRaiz);
+        canvas.setElementos(elementos);
+        canvas.redraw();
     }
 
     @FXML
@@ -87,7 +88,9 @@ public class FXMLController implements Initializable {
         arbolesService.decisionTree(elementos, rangos, nodoRaiz, umbral);
 
         imprimirArbol(nodoRaiz);
-        canvas.redraw(nodoRaiz, elementos);
+        canvas.setNodoRaiz(nodoRaiz);
+        canvas.setElementos(elementos);
+        canvas.redraw();
         System.out.println("Proceso finalizado!");
     }
 
@@ -124,7 +127,6 @@ public class FXMLController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        canvas.inicializar(elementos, nodoRaiz);
     }
 
 

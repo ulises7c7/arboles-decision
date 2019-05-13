@@ -3,6 +3,7 @@
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import ar.com.utn.frre.grupo2.arboldecision.CanvasGrafico?>
+<?import ar.com.utn.frre.grupo2.arboldecision.CanvasArbol?>
 <?import javafx.scene.*?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.*?>
@@ -64,9 +65,9 @@
 
         </CanvasGrafico>
 
-        <Canvas fx:id="canvasArbol"  GridPane.columnIndex="2"  GridPane.rowSpan="1" GridPane.columnSpan="1" GridPane.rowIndex="1">
+        <CanvasArbol fx:id="canvasArbol"  GridPane.columnIndex="2"  GridPane.rowSpan="1" GridPane.columnSpan="1" GridPane.rowIndex="1">
 
-        </Canvas>
+        </CanvasArbol>
 
 
     </children>
@@ -74,7 +75,8 @@
 
     <columnConstraints>
         <ColumnConstraints  hgrow="SOMETIMES" minWidth="300.0" percentWidth="30.0" prefWidth="300.0" />
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" percentWidth="70.0" prefWidth="300.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" percentWidth="35.0" prefWidth="300.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" percentWidth="35.0" prefWidth="300.0" />
     </columnConstraints>
     <rowConstraints>
         <RowConstraints />
