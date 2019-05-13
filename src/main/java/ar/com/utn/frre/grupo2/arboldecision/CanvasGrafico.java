@@ -10,11 +10,15 @@ import ar.com.utn.frre.grupo2.arboldecision.dto.NodoDTO;
 import ar.com.utn.frre.grupo2.arboldecision.service.ArbolDecisionService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.List;
+import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 /**
  *
@@ -26,6 +30,8 @@ public class CanvasGrafico extends Canvas {
     private GraphicsContext gc;
     private double offsetY = 300;
     private double offsetX = 50;
+    DecimalFormat df = new DecimalFormat();
+
 
 
     private NodoDTO nodoRaiz;
@@ -33,6 +39,10 @@ public class CanvasGrafico extends Canvas {
 
     public CanvasGrafico() {
         super();
+
+        df.setMaximumFractionDigits(3);
+        df.setMinimumFractionDigits(3);
+        df.setGroupingUsed(false);
 
         this.setHeight(400);
         this.setWidth(300);
@@ -48,7 +58,9 @@ public class CanvasGrafico extends Canvas {
         });
 
         this.setOnMouseMoved((event) -> {
+
             redraw();
+            dibujarCoordenadas(event.getSceneX() - this.getLayoutX(), event.getSceneY() - this.getLayoutY());
             gc.setStroke(Color.color(SolarizedColors.BASE3.getRed(), SolarizedColors.BASE3.getGreen(), SolarizedColors.BASE3.getBlue(), 0.5));
             gc.setLineWidth(0.5);
             gc.strokeLine(event.getSceneX() - this.getLayoutX(), 0, event.getSceneX() - this.getLayoutX(), this.getHeight());
@@ -77,6 +89,23 @@ public class CanvasGrafico extends Canvas {
 
         offsetX = offsetX + xCursor - this.getLayoutX() - corregirX;
         offsetY = offsetY + yCursor - this.getLayoutY() - corregirY;
+    }
+
+    private void dibujarCoordenadas(double canvasCoordX, double canvasCoordY) {
+
+        gc.setTextAlign(TextAlignment.RIGHT);
+        gc.setTextBaseline(VPos.CENTER);
+
+        gc.setStroke(SolarizedColors.BASE3);
+        gc.setLineWidth(0.5);
+        gc.setFont(new Font(gc.getFont().getName(), 10));
+
+        String texto = String.format("(%s;%s)",
+                df.format(traducirX(canvasCoordX)),
+                df.format(traducirY(canvasCoordY)));
+
+        gc.strokeText(texto, this.widthProperty().doubleValue() - 10, 10);
+
     }
 
 
