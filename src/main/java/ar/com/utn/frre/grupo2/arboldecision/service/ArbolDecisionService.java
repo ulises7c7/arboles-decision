@@ -372,7 +372,10 @@ public class ArbolDecisionService {
             }
 
             if (entropiaTotal.subtract(menorEntropia).compareTo(umbral) == -1) {
-                //TODO: tratar este caso, se hace T nodo hoja de clase cj mas frecuente
+                //Se hace T nodo hoja de clase cj mas frecuente
+                nodo.setEsHoja(Boolean.TRUE);
+                nodo.setEsHojaPura(Boolean.FALSE);
+                nodo.setClaseHoja(claseMasFrecuente(elementos));
             } else {
                 nodo.setEsHoja(Boolean.FALSE);
                 nodo.setHijos(new ArrayList<>());

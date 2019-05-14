@@ -19,6 +19,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -38,6 +39,9 @@ public class FXMLController implements Initializable {
     private final Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
 
     private final ResourceBundle mensajes = ResourceBundle.getBundle("strings/mensajes");
+
+    @FXML
+    private TextField umbralTextField;
 
     @FXML
     private TableView<ElementoDTO> elementosTable;
@@ -87,8 +91,7 @@ public class FXMLController implements Initializable {
         nodoRaiz.setNivel(1);
         nodoRaiz.setRangosDTO(rangos);
 
-        //TODO: parametrizar
-        BigDecimal umbral = BigDecimal.ZERO;
+        BigDecimal umbral = new BigDecimal(umbralTextField.getText());
 
         arbolesService.decisionTree(elementos, rangos, nodoRaiz, umbral);
 
@@ -103,6 +106,7 @@ public class FXMLController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        umbralTextField.setText("0");
     }
 
     public Stage getStage() {

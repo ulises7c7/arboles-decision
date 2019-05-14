@@ -65,6 +65,10 @@
 
         </CanvasGrafico>
 
+        <TextField fx:id="umbralTextField" promptText="Umbral"
+                   HBox.hgrow="ALWAYS"   maxWidth="Infinity"
+                   GridPane.columnIndex="2" GridPane.columnSpan="1" GridPane.rowIndex="0" />
+
         <CanvasArbol fx:id="canvasArbol"  GridPane.columnIndex="2"  GridPane.rowSpan="1" GridPane.columnSpan="1" GridPane.rowIndex="1">
 
         </CanvasArbol>
