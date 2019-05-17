@@ -32,8 +32,6 @@ public class CanvasGrafico extends Canvas {
     private double offsetX = 50;
     DecimalFormat df = new DecimalFormat();
 
-
-
     private NodoDTO nodoRaiz;
     private List<ElementoDTO> elementos;
 
@@ -44,8 +42,10 @@ public class CanvasGrafico extends Canvas {
         df.setMinimumFractionDigits(3);
         df.setGroupingUsed(false);
 
-        this.setHeight(400);
-        this.setWidth(300);
+//        this.setHeight(400);
+        widthProperty().addListener(evt -> redraw());
+        heightProperty().addListener(evt -> redraw());
+
         this.setOnMouseExited((event) -> {
             redraw();
         });
@@ -60,11 +60,11 @@ public class CanvasGrafico extends Canvas {
         this.setOnMouseMoved((event) -> {
 
             redraw();
-            dibujarCoordenadas(event.getSceneX() - this.getLayoutX(), event.getSceneY() - this.getLayoutY());
+            dibujarCoordenadas(event.getSceneX() - this.getLayoutX(), event.getSceneY() - this.getLayoutY() - 70);
             gc.setStroke(Color.color(SolarizedColors.BASE3.getRed(), SolarizedColors.BASE3.getGreen(), SolarizedColors.BASE3.getBlue(), 0.5));
             gc.setLineWidth(0.5);
             gc.strokeLine(event.getSceneX() - this.getLayoutX(), 0, event.getSceneX() - this.getLayoutX(), this.getHeight());
-            gc.strokeLine(0, event.getSceneY() - this.getLayoutY(), this.getWidth(), event.getSceneY() - this.getLayoutY());
+            gc.strokeLine(0, event.getSceneY() - this.getLayoutY() - 70d, this.getWidth(), event.getSceneY() - this.getLayoutY() - 70d);
 
         });
         gc = this.getGraphicsContext2D();
@@ -104,10 +104,9 @@ public class CanvasGrafico extends Canvas {
                 df.format(traducirX(canvasCoordX)),
                 df.format(traducirY(canvasCoordY)));
 
-        gc.strokeText(texto, this.widthProperty().doubleValue() - 10, 10);
+        gc.strokeText(texto, prefWidth(offsetY) - 10, 10);
 
     }
-
 
     private void dibujarParticiones(NodoDTO nodo) {
         if (nodo != null && nodo.getHijos() != null && !nodo.getHijos().isEmpty()) {
@@ -149,7 +148,6 @@ public class CanvasGrafico extends Canvas {
         gc.strokeLine(corregirX(coordX), corregirY(coordY), corregirX(coordX), corregirY(coordY));
 
     }
-
 
     private double corregirX(BigDecimal coordX) {
         return coordX.multiply(new BigDecimal(factorScale)).setScale(0, RoundingMode.HALF_UP).longValue() + offsetX;
@@ -206,6 +204,21 @@ public class CanvasGrafico extends Canvas {
 
     public void setElementos(List<ElementoDTO> elementos) {
         this.elementos = elementos;
+    }
+
+    @Override
+    public boolean isResizable() {
+        return true;
+    }
+
+    @Override
+    public double prefWidth(double height) {
+        return getWidth();
+    }
+
+    @Override
+    public double prefHeight(double width) {
+        return getHeight();
     }
 
 }
