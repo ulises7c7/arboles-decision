@@ -15,6 +15,7 @@ import java.util.List;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
@@ -24,12 +25,13 @@ import javafx.scene.text.TextAlignment;
  *
  * @author ulises
  */
-public class CanvasGrafico extends Canvas {
+public class CanvasGrafico extends Pane {
 
     private double factorScale = 80;
     private GraphicsContext gc;
     private double offsetY = 300;
     private double offsetX = 50;
+    private final Canvas canvas = new Canvas();
     DecimalFormat df = new DecimalFormat();
 
     private NodoDTO nodoRaiz;
@@ -38,13 +40,12 @@ public class CanvasGrafico extends Canvas {
     public CanvasGrafico() {
         super();
 
+        getChildren().add(canvas);
+
         df.setMaximumFractionDigits(3);
         df.setMinimumFractionDigits(3);
         df.setGroupingUsed(false);
 
-//        this.setHeight(400);
-        widthProperty().addListener(evt -> redraw());
-        heightProperty().addListener(evt -> redraw());
 
         this.setOnMouseExited((event) -> {
             redraw();
@@ -52,22 +53,21 @@ public class CanvasGrafico extends Canvas {
 
         this.setOnScroll((event) -> {
 
-            scrollZoom(event.getDeltaY(), event.getSceneX(), event.getSceneY());
+            scrollZoom(event.getDeltaY(), event.getX(), event.getY());
 
             redraw();
         });
 
         this.setOnMouseMoved((event) -> {
-
             redraw();
-            dibujarCoordenadas(event.getSceneX() - this.getLayoutX(), event.getSceneY() - this.getLayoutY() - 70);
+            dibujarCoordenadas(event.getX(), event.getY());
             gc.setStroke(Color.color(SolarizedColors.BASE3.getRed(), SolarizedColors.BASE3.getGreen(), SolarizedColors.BASE3.getBlue(), 0.5));
             gc.setLineWidth(0.5);
-            gc.strokeLine(event.getSceneX() - this.getLayoutX(), 0, event.getSceneX() - this.getLayoutX(), this.getHeight());
-            gc.strokeLine(0, event.getSceneY() - this.getLayoutY() - 70d, this.getWidth(), event.getSceneY() - this.getLayoutY() - 70d);
+            gc.strokeLine(event.getX(), 0, event.getX(), this.getHeight());
+            gc.strokeLine(0, event.getY(), this.getWidth(), event.getY());
 
         });
-        gc = this.getGraphicsContext2D();
+        gc = canvas.getGraphicsContext2D();
         pintarFondo();
         dibujarEjes();
 
@@ -207,18 +207,20 @@ public class CanvasGrafico extends Canvas {
     }
 
     @Override
-    public boolean isResizable() {
-        return true;
-    }
-
-    @Override
-    public double prefWidth(double height) {
-        return getWidth();
-    }
-
-    @Override
-    public double prefHeight(double width) {
-        return getHeight();
+    protected void layoutChildren() {
+        double top = snappedTopInset();
+        double right = snappedRightInset();
+        double bottom = snappedBottomInset();
+        double left = snappedLeftInset();
+        double w = getWidth() - left - right;
+        double h = getHeight() - top - bottom;
+        canvas.setLayoutX(left);
+        canvas.setLayoutY(top);
+        if (w != canvas.getWidth() || h != canvas.getHeight()) {
+            canvas.setWidth(w);
+            canvas.setHeight(h);
+            redraw();
+        }
     }
 
 }

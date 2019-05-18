@@ -18,7 +18,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
@@ -51,8 +50,6 @@ public class FXMLController implements Initializable {
     private CanvasGrafico canvas;
     @FXML
     private CanvasArbol canvasArbol;
-    @FXML
-    private SplitPane splitPaneInterior;
 
     @FXML
     private void importarElementos() {
@@ -110,20 +107,6 @@ public class FXMLController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         umbralTextField.setText("0");
-
-//         ResizableCanvas canvas = new ResizableCanvas();
-//    StackPane stackPane = new StackPane();
-//    stackPane.getChildren().add(canvas);
-        // Bind canvas size to stack pane size.
-//        splitPaneInterior.get
-        canvas.widthProperty().bind(
-                splitPaneInterior.widthProperty());
-        canvas.heightProperty().bind(
-                splitPaneInterior.heightProperty().subtract(0d));
-
-//    stage.setScene(new Scene(stackPane));
-//    stage.setTitle("Tip 1: Resizable Canvas");
-//    stage.show();
     }
 
     public Stage getStage() {

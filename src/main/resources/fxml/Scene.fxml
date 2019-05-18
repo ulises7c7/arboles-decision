@@ -14,14 +14,16 @@
 <?import javafx.collections.*?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 
-<BorderPane fx:controller="ar.com.utn.frre.grupo2.arboldecision.FXMLController" id="BorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" xmlns:fx="http://javafx.com/fxml">
+<BorderPane fx:controller="ar.com.utn.frre.grupo2.arboldecision.FXMLController" id="BorderPane"
+            maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="600.0" prefWidth="1000.0" xmlns:fx="http://javafx.com/fxml">
 
-    <bottom>
+    <!--    <bottom>
         <Label alignment="CENTER" maxHeight="1.7976931348623157E308"
                maxWidth="1.7976931348623157E308"
                text="(56, 32)" textAlignment="LEFT"
                BorderPane.alignment="CENTER" />
-    </bottom>
+    </bottom>-->
     <center>
         <SplitPane dividerPositions="0.3492462311557789" focusTraversable="true" prefHeight="160.0" prefWidth="200.0">
             <items>
@@ -29,60 +31,79 @@
                     <items>
                         <TabPane prefHeight="200.0" prefWidth="200.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE">
                             <tabs>
-                                <Tab text="A">
+                                <Tab text="Entrenamiento">
                                     <content>
-                                        <TableView fx:id="elementosTable" GridPane.columnIndex="0" GridPane.columnSpan="1" GridPane.rowIndex="1">
+                                        <GridPane alignment="center" hgap="10" styleClass="root" vgap="10" GridPane.fillWidth="true"
+                                                  xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
 
-                                            <columns>
-                                                <TableColumn text="X">
-                                                    <cellValueFactory>
-                                                        <PropertyValueFactory property="coordX" />
-                                                    </cellValueFactory>
-                                                </TableColumn>
+                                            <padding>
+                                                <Insets bottom="5" left="5" right="5" top="5" />
+                                            </padding>
+                                            <children>
 
-                                                <TableColumn text="Y">
-                                                    <cellValueFactory>
-                                                        <PropertyValueFactory property="coordY" />
-                                                    </cellValueFactory>
-                                                </TableColumn>
-
-                                                <TableColumn text="Clase">
-                                                    <cellValueFactory>
-                                                        <PropertyValueFactory property="clase" />
-                                                    </cellValueFactory>
-                                                </TableColumn>
-                                            </columns>
+                                                <Label HBox.hgrow="ALWAYS"   maxWidth="Infinity"
+                                                       GridPane.columnIndex="0" GridPane.columnSpan="1" GridPane.rowIndex="0"
+                                                       text="Umbral" />
 
 
+                                                <TextField fx:id="umbralTextField" promptText="Umbral"
+                                                           HBox.hgrow="ALWAYS"  maxWidth="Infinity"
+                                                           GridPane.columnIndex="1" GridPane.columnSpan="1" GridPane.rowIndex="0" />
 
-                                        </TableView>
+
+                                                <TableView fx:id="elementosTable"  GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="1">
+
+                                                    <columns>
+                                                        <TableColumn text="X">
+                                                            <cellValueFactory>
+                                                                <PropertyValueFactory property="coordX" />
+                                                            </cellValueFactory>
+                                                        </TableColumn>
+
+                                                        <TableColumn text="Y">
+                                                            <cellValueFactory>
+                                                                <PropertyValueFactory property="coordY" />
+                                                            </cellValueFactory>
+                                                        </TableColumn>
+
+                                                        <TableColumn text="Clase">
+                                                            <cellValueFactory>
+                                                                <PropertyValueFactory property="clase" />
+                                                            </cellValueFactory>
+                                                        </TableColumn>
+                                                    </columns>
+                                                </TableView>
+
+                                            </children>
+
+                                            <columnConstraints>
+                                                <ColumnConstraints  hgrow="SOMETIMES" minWidth="50.0" percentWidth="50.0" prefWidth="50.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" percentWidth="50.0" prefWidth="50.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                                <RowConstraints />
+                                                <RowConstraints />
+                                            </rowConstraints>
+
+                                        </GridPane>
                                     </content>
                                 </Tab>
-                                <Tab text="B">
+                                <Tab text="Prueba">
                                     <content>
-                                        <CanvasArbol fx:id="canvasArbol"  GridPane.columnIndex="2"  GridPane.rowSpan="1" GridPane.columnSpan="1" GridPane.rowIndex="1">
 
-                                        </CanvasArbol>
                                     </content>
                                 </Tab>
-                                <Tab text="C">
+                                <Tab text="Propiedades del nodo">
                                     <content>
-                                        <TextField fx:id="umbralTextField" promptText="Umbral"
-                                                   HBox.hgrow="ALWAYS"   maxWidth="Infinity"
-                                                   GridPane.columnIndex="2" GridPane.columnSpan="1" GridPane.rowIndex="0" />
+
                                     </content>
                                 </Tab>
-
-
-
                             </tabs>
                         </TabPane>
-                        <CanvasGrafico fx:id="canvas"  GridPane.columnIndex="1"  GridPane.rowSpan="1" GridPane.columnSpan="1" GridPane.rowIndex="1">
-
-                        </CanvasGrafico>
+                        <CanvasGrafico fx:id="canvas" />
                     </items>
                 </SplitPane>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="80.0" prefWidth="50.0" style="-fx-background-color: palegreen;" />
+                <CanvasArbol fx:id="canvasArbol"/>
             </items>
         </SplitPane>
     </center>
@@ -94,13 +115,7 @@
                         <Menu mnemonicParsing="false" text="Archivo">
                             <items>
                                 <MenuItem mnemonicParsing="false" onAction="#importarElementos"  text="Importar datos de entrenamiento" />
-                                <MenuItem mnemonicParsing="false" onAction="#procesarElementos" text="Procesar" />
-                                <MenuItem mnemonicParsing="false" text="Close" />
-                            </items>
-                        </Menu>
-                        <Menu mnemonicParsing="false" text="Edit">
-                            <items>
-                                <MenuItem mnemonicParsing="false" text="Delete" />
+                                <MenuItem mnemonicParsing="false" text="Cerrar" />
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Ayuda">
@@ -112,8 +127,16 @@
                 </MenuBar>
                 <ToolBar>
                     <items>
-                        <Button mnemonicParsing="false" style="-fx-graphic: url('http://icons.iconarchive.com/icons/custom-icon-design/pretty-office-9/24/open-file-icon.png');" text="" />
-                        <Button mnemonicParsing="false" style="-fx-graphic: url('http://icons.iconarchive.com/icons/custom-icon-design/pretty-office-7/24/Save-icon.png');" text="" />
+                        <Button mnemonicParsing="false" onAction="#importarElementos" style="-fx-graphic: url('img/icon-open-file.png');" text="" >
+                            <tooltip>
+                                <Tooltip text="Importar puntos de entrenamiento" />
+                            </tooltip>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#procesarElementos" style="-fx-graphic: url('img/icon-tree.png');" text="" >
+                            <tooltip>
+                                <Tooltip text="Ejecutar Decision Tree" />
+                            </tooltip>
+                        </Button>
                     </items>
                 </ToolBar>
             </children>
