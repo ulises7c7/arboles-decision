@@ -46,7 +46,6 @@ public class CanvasGrafico extends Pane {
         df.setMinimumFractionDigits(3);
         df.setGroupingUsed(false);
 
-
         this.setOnMouseExited((event) -> {
             redraw();
         });
@@ -79,16 +78,16 @@ public class CanvasGrafico extends Pane {
             zoomFactor = 2.0 - zoomFactor;
         }
 
-        BigDecimal xReal = traducirX(xCursor - this.getLayoutX());
-        BigDecimal yReal = traducirY(yCursor - this.getLayoutY());
+        BigDecimal xReal = traducirX(xCursor);
+        BigDecimal yReal = traducirY(yCursor);
 
         factorScale = factorScale * (2 - zoomFactor);
 
         double corregirX = corregirX(xReal);
         double corregirY = corregirY(yReal);
 
-        offsetX = offsetX + xCursor - this.getLayoutX() - corregirX;
-        offsetY = offsetY + yCursor - this.getLayoutY() - corregirY;
+        offsetX = offsetX + xCursor - corregirX;
+        offsetY = offsetY + yCursor - corregirY;
     }
 
     private void dibujarCoordenadas(double canvasCoordX, double canvasCoordY) {

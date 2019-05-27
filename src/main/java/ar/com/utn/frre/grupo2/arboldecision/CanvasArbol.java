@@ -54,7 +54,6 @@ public class CanvasArbol extends Pane {
 
     }
 
-
     private void contarNiveles(NodoDTO nodo) {
         if (nodo.getNivel() > nivelesCount) {
             nivelesCount = nodo.getNivel();
@@ -155,8 +154,6 @@ public class CanvasArbol extends Pane {
 
     }
 
-
-
     public NodoDTO getNodoRaiz() {
         return nodoRaiz;
     }
@@ -210,6 +207,5 @@ public class CanvasArbol extends Pane {
 
         return w;
     }
-
 
 }
