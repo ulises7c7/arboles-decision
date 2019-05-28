@@ -3,7 +3,7 @@
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import ar.com.utn.frre.grupo2.arboldecision.CanvasGrafico?>
-<?import ar.com.utn.frre.grupo2.arboldecision.CanvasArbol?>
+<?import ar.com.utn.frre.grupo2.arboldecision.PanelArbol?>
 <?import javafx.scene.*?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.*?>
@@ -29,7 +29,7 @@
             <items>
                 <SplitPane fx:id="splitPaneInterior" id="SplitPane" dividerPositions="0.6088328075709779" orientation="VERTICAL">
                     <items>
-                        <TabPane prefHeight="200.0" prefWidth="200.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE">
+                        <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE">
                             <tabs>
                                 <Tab text="Entrenamiento">
                                     <content>
@@ -91,11 +91,135 @@
                                 <Tab text="Prueba">
                                     <content>
 
+
+
+                                        <GridPane alignment="center" hgap="10" styleClass="root" vgap="10" GridPane.fillWidth="true"
+                                                  xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+
+                                            <padding>
+                                                <Insets bottom="5" left="5" right="5" top="5" />
+                                            </padding>
+                                            <children>
+
+
+
+
+                                                <TextField fx:id="coordXTestPoint" promptText="Coord x"
+                                                           HBox.hgrow="ALWAYS"  maxWidth="Infinity"
+                                                           GridPane.columnIndex="0" GridPane.columnSpan="1" GridPane.rowIndex="0" />
+                                                <TextField fx:id="coordYTestPoint" promptText="Coord y"
+                                                           HBox.hgrow="ALWAYS"  maxWidth="Infinity"
+                                                           GridPane.columnIndex="1" GridPane.columnSpan="1" GridPane.rowIndex="0" />
+                                                <TextField fx:id="claseTestPoint" promptText="clase"
+                                                           HBox.hgrow="ALWAYS"  maxWidth="Infinity"
+                                                           GridPane.columnIndex="2" GridPane.columnSpan="1" GridPane.rowIndex="0" />
+                                                <Button mnemonicParsing="false" onAction="#addTestPoint" text="Agregar"
+                                                        HBox.hgrow="ALWAYS"  maxWidth="Infinity"
+                                                        GridPane.columnIndex="3" GridPane.columnSpan="1" GridPane.rowIndex="0"/>
+
+
+
+                                                <TableView fx:id="elementosTestTable"  GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="1">
+
+                                                    <columns>
+                                                        <TableColumn text="X">
+                                                            <cellValueFactory>
+                                                                <PropertyValueFactory property="coordX" />
+                                                            </cellValueFactory>
+                                                        </TableColumn>
+
+                                                        <TableColumn text="Y">
+                                                            <cellValueFactory>
+                                                                <PropertyValueFactory property="coordY" />
+                                                            </cellValueFactory>
+                                                        </TableColumn>
+
+                                                        <TableColumn text="Clase">
+                                                            <cellValueFactory>
+                                                                <PropertyValueFactory property="clase" />
+                                                            </cellValueFactory>
+                                                        </TableColumn>
+
+                                                        <TableColumn text="Clasificacion">
+                                                            <cellValueFactory>
+                                                                <PropertyValueFactory property="resultadoClasificacion" />
+                                                            </cellValueFactory>
+                                                        </TableColumn>
+                                                    </columns>
+
+                                                </TableView>
+
+                                                <Button mnemonicParsing="false" onAction="#borrarTestData" text="Borrar"
+                                                        HBox.hgrow="ALWAYS"  maxWidth="Infinity"
+                                                        GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2"/>
+                                                <Button mnemonicParsing="false" onAction="#clasificarDatosPrueba" text="Clasificar"
+                                                        HBox.hgrow="ALWAYS"  maxWidth="Infinity"
+                                                        GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2"/>
+
+                                            </children>
+
+                                            <columnConstraints>
+                                                <ColumnConstraints  hgrow="SOMETIMES" minWidth="50.0" percentWidth="50.0" prefWidth="50.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" percentWidth="50.0" prefWidth="50.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" percentWidth="50.0" prefWidth="50.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" percentWidth="50.0" prefWidth="50.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                                <RowConstraints />
+                                                <RowConstraints />
+                                                <RowConstraints />
+                                            </rowConstraints>
+
+                                        </GridPane>
+
+
+
+
+
                                     </content>
                                 </Tab>
                                 <Tab text="Propiedades del nodo">
                                     <content>
+                                        <GridPane alignment="center" hgap="10" styleClass="root" vgap="10" GridPane.fillWidth="true"
+                                                  xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+                                            <padding>
+                                                <Insets bottom="5" left="5" right="5" top="5" />
+                                            </padding>
+                                            <children>
+                                                <Label HBox.hgrow="ALWAYS"   maxWidth="Infinity"
+                                                       GridPane.columnIndex="0" GridPane.columnSpan="1" GridPane.rowIndex="0"
+                                                       text="Tipo de nodo" />
+                                                <Label  fx:id="tipoNodoLbl" HBox.hgrow="ALWAYS"   maxWidth="Infinity"
+                                                        GridPane.columnIndex="1" GridPane.columnSpan="1" GridPane.rowIndex="0"
+                                                        text="" />
 
+                                                <Label HBox.hgrow="ALWAYS"   maxWidth="Infinity"
+                                                       GridPane.columnIndex="0" GridPane.columnSpan="1" GridPane.rowIndex="1"
+                                                       text="Tipo de hoja" />
+                                                <Label  fx:id="tipoHojaLbl" HBox.hgrow="ALWAYS"   maxWidth="Infinity"
+                                                        GridPane.columnIndex="1" GridPane.columnSpan="1" GridPane.rowIndex="1"
+                                                        text="" />
+
+                                                <Label HBox.hgrow="ALWAYS"   maxWidth="Infinity"
+                                                       GridPane.columnIndex="0" GridPane.columnSpan="1" GridPane.rowIndex="2"
+                                                       text="Clase hoja" />
+                                                <Label  fx:id="claseHojaLbl" HBox.hgrow="ALWAYS"   maxWidth="Infinity"
+                                                        GridPane.columnIndex="1" GridPane.columnSpan="1" GridPane.rowIndex="2"
+                                                        text="" />
+
+
+
+
+                                            </children>
+                                            <columnConstraints>
+                                                <ColumnConstraints  hgrow="SOMETIMES" minWidth="50.0" percentWidth="50.0" prefWidth="50.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" percentWidth="50.0" prefWidth="50.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                                <RowConstraints />
+                                                <RowConstraints />
+                                            </rowConstraints>
+                                        </GridPane>
                                     </content>
                                 </Tab>
                             </tabs>
@@ -103,7 +227,7 @@
                         <CanvasGrafico fx:id="canvas" />
                     </items>
                 </SplitPane>
-                <CanvasArbol fx:id="canvasArbol"/>
+                <PanelArbol fx:id="canvasArbol"/>
             </items>
         </SplitPane>
     </center>

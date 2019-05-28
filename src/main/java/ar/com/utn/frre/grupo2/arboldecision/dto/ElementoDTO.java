@@ -28,6 +28,8 @@ public class ElementoDTO {
     @Field(at = 2)
     private Integer clase;
 
+    private String resultadoClasificacion;
+
     public BigDecimal getCoordX() {
         return coordX;
     }
@@ -50,6 +52,14 @@ public class ElementoDTO {
 
     public void setClase(Integer clase) {
         this.clase = clase;
+    }
+
+    public String getResultadoClasificacion() {
+        return resultadoClasificacion;
+    }
+
+    public void setResultadoClasificacion(String resultadoClasificacion) {
+        this.resultadoClasificacion = resultadoClasificacion;
     }
 
     @Override

@@ -6,45 +6,46 @@
 package ar.com.utn.frre.grupo2.arboldecision;
 
 import ar.com.utn.frre.grupo2.arboldecision.dto.NodoDTO;
+import ar.com.utn.frre.grupo2.arboldecision.view.NodoView;
+import ar.com.utn.frre.grupo2.arboldecision.view.SelectionHandler;
 import java.text.NumberFormat;
 import java.util.List;
-import javafx.geometry.VPos;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
+import javafx.geometry.Insets;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
+import javafx.scene.text.Text;
 
 /**
  *
  * @author ulises
  */
-public class CanvasArbol extends Pane {
+public class PanelArbol extends Pane {
 
-    private GraphicsContext gc;
     private NodoDTO nodoRaiz;
     private final double diametroNodo = 30;
 
     private Integer nivelesCount = 1;
-    private final Canvas canvas = new Canvas();
+    private final SelectionHandler selectionHandler;
 
-    public CanvasArbol() {
+    public PanelArbol() {
         super();
 
-        getChildren().add(canvas);
+        selectionHandler = new SelectionHandler(this);
+        this.addEventHandler(MouseEvent.MOUSE_PRESSED, selectionHandler.getMousePressedEventHandler());
 
-        gc = canvas.getGraphicsContext2D();
-        pintarFondo();
-
-    }
-
-    private void pintarFondo() {
-        gc.setFill(SolarizedColors.BASE3);
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        this.setBackground(
+                new Background(
+                        new BackgroundFill(
+                                SolarizedColors.BASE3, CornerRadii.EMPTY, Insets.EMPTY)));
     }
 
     public void redraw() {
-        pintarFondo();
+        this.getChildren().clear();
         nivelesCount = 1;
         if (nodoRaiz != null) {
             contarNiveles(nodoRaiz);
@@ -93,13 +94,14 @@ public class CanvasArbol extends Pane {
     }
 
     private void dibujarTexto(String texto, double x, double y) {
-        gc.setTextAlign(TextAlignment.CENTER);
-        gc.setTextBaseline(VPos.CENTER);
-        gc.setFill(SolarizedColors.BASE03);
-        gc.setStroke(SolarizedColors.BASE03);
-        gc.setFont(new Font(gc.getFont().getName(), 9));
+        Text text = new Text(texto);
+        text.setX(x - text.getLayoutBounds().getWidth() / 2);
+        text.setY(y + text.getLayoutBounds().getHeight() / 4);
+        text.setFill(SolarizedColors.BASE03);
+        text.setStroke(SolarizedColors.BASE03);
+        text.setFont(new Font(text.getFont().getName(), 9));
 
-        gc.strokeText(texto, x, y);
+        getChildren().add(text);
     }
 
     private String armarTextoRama(NodoDTO nodo) {
@@ -116,7 +118,7 @@ public class CanvasArbol extends Pane {
         dibujarNodo(calcularNodoCoordX(
                 nodo.getCamino()),
                 calcularNodoCoordY(nodo.getNivel(), nivelesCount),
-                nodo.getEsHoja() ? nodo.getClaseHoja() == null ? "?" : nodo.getClaseHoja().toString() : null);
+                nodo.getEsHoja() ? nodo.getClaseHoja() == null ? "?" : nodo.getClaseHoja().toString() : null, nodo);
         if (nodo.getHijos() != null && !nodo.getHijos().isEmpty()) {
             for (NodoDTO hijo : nodo.getHijos()) {
                 dibujarNodos(hijo);
@@ -125,31 +127,33 @@ public class CanvasArbol extends Pane {
     }
 
     private void dibujarArista(double startX, double startY, double endX, double endY) {
-        gc.setStroke(SolarizedColors.BASE03);
-        gc.setLineWidth(1);
-        gc.strokeLine(startX, startY, endX, endY);
+        Line linea = new Line(startX, startY, endX, endY);
+        linea.setStrokeWidth(1);
+        linea.setStroke(SolarizedColors.BASE03);
+        getChildren().add(linea);
     }
 
-    private void dibujarNodo(double xCentro, double yCentro, String label) {
-        gc.setStroke(SolarizedColors.BASE03);
-        gc.setFill(SolarizedColors.BASE2);
-        gc.setLineWidth(1);
+    private void dibujarNodo(double xCentro, double yCentro, String label, NodoDTO nodoDTO) {
+
         double radioNodo = diametroNodo / 2;
-        gc.fillOval(xCentro - radioNodo, yCentro - radioNodo, diametroNodo, diametroNodo);
-        gc.strokeOval(xCentro - radioNodo, yCentro - radioNodo, diametroNodo, diametroNodo);
+
+        NodoView circulo = new NodoView(xCentro, yCentro, radioNodo, nodoDTO);
+        getChildren().add(circulo);
 
         if (label != null) {
-            gc.setTextAlign(TextAlignment.CENTER);
-            gc.setTextBaseline(VPos.CENTER);
+            Text text = new Text(label);
+            text.setX(xCentro - text.getLayoutBounds().getWidth() / 2);
+            text.setY(yCentro + text.getLayoutBounds().getHeight() / 4);
+            text.setFont(new Font(text.getFont().getName(), 10));
 
             if ("?".equals(label)) {
-                gc.setStroke(SolarizedColors.getColorByClase(0));
-            } else {
-                gc.setStroke(SolarizedColors.getColorByClase(Integer.valueOf(label)));
-            }
-            gc.setFont(new Font(gc.getFont().getName(), 10));
+                text.setStroke(SolarizedColors.getColorByClase(0));
 
-            gc.strokeText(label, xCentro, yCentro);
+            } else {
+                text.setStroke(SolarizedColors.getColorByClase(Integer.valueOf(label)));
+            }
+
+            getChildren().add(text);
         }
 
     }
@@ -178,17 +182,17 @@ public class CanvasArbol extends Pane {
 
     @Override
     protected void layoutChildren() {
-        double top = snappedTopInset();
-        double left = snappedLeftInset();
-        double w = getInnerWidthPane();
-        double h = getInnerHeightPane();
-        canvas.setLayoutX(left);
-        canvas.setLayoutY(top);
-        if (w != canvas.getWidth() || h != canvas.getHeight()) {
-            canvas.setWidth(w);
-            canvas.setHeight(h);
-            redraw();
-        }
+//        double top = snappedTopInset();
+//        double left = snappedLeftInset();
+//        double w = getInnerWidthPane();
+//        double h = getInnerHeightPane();
+//        canvas.setLayoutX(left);
+//        canvas.setLayoutY(top);
+//        if (w != canvas.getWidth() || h != canvas.getHeight()) {
+//            canvas.setWidth(w);
+//            canvas.setHeight(h);
+//            redraw();
+//        }
     }
 
     private double getInnerHeightPane() {
@@ -206,6 +210,10 @@ public class CanvasArbol extends Pane {
         double w = getWidth() - left - right;
 
         return w;
+    }
+
+    public SelectionHandler getSelectionHandler() {
+        return selectionHandler;
     }
 
 }

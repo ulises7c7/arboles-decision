@@ -156,11 +156,11 @@ public class CanvasGrafico extends Pane {
         return -coordY.multiply(new BigDecimal(factorScale)).setScale(0, RoundingMode.HALF_UP).longValue() + offsetY;
     }
 
-    private BigDecimal traducirX(double x) {
+    public BigDecimal traducirX(double x) {
         return new BigDecimal((x - offsetX) / factorScale);
     }
 
-    private BigDecimal traducirY(double y) {
+    public BigDecimal traducirY(double y) {
         return new BigDecimal((offsetY - y) / factorScale);
     }
 

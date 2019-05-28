@@ -10,14 +10,20 @@ import eu.hansolo.enzo.notification.NotificationBuilder;
 import eu.hansolo.enzo.notification.NotifierBuilder;
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
@@ -34,6 +40,7 @@ public class FXMLController implements Initializable {
 
     private final ElementosDAO elementosDAO = new ElementosDAO();
     private final List<ElementoDTO> elementos = new ArrayList<>();
+    private final List<ElementoDTO> elementosPrueba = new ArrayList<>();
     private NodoDTO nodoRaiz = null;
 
     private final Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -45,11 +52,28 @@ public class FXMLController implements Initializable {
 
     @FXML
     private TableView<ElementoDTO> elementosTable;
+    @FXML
+    private TableView<ElementoDTO> elementosTestTable;
 
+    @FXML
+    private TextField coordXTestPoint;
+    @FXML
+    private TextField coordYTestPoint;
+    @FXML
+    private TextField claseTestPoint;
     @FXML
     private CanvasGrafico canvas;
     @FXML
-    private CanvasArbol canvasArbol;
+    private Label claseHojaLbl;
+    @FXML
+    private Label tipoHojaLbl;
+    @FXML
+    private Label tipoNodoLbl;
+    @FXML
+    private PanelArbol canvasArbol;
+    @FXML
+    private TabPane tabPane;
+    private final Map<String, Label> labels = new HashMap<>();
 
     @FXML
     private void importarElementos() {
@@ -104,9 +128,51 @@ public class FXMLController implements Initializable {
         System.out.println("Proceso finalizado!");
     }
 
+    @FXML
+    private void addTestPoint() {
+        ElementoDTO elementoTest = new ElementoDTO();
+
+        elementoTest.setCoordX(new BigDecimal(coordXTestPoint.getText()));
+        elementoTest.setCoordY(new BigDecimal(coordYTestPoint.getText()));
+        elementoTest.setClase(Integer.valueOf(claseTestPoint.getText()));
+
+        elementosPrueba.add(elementoTest);
+        elementosTestTable.getItems().clear();
+        elementosTestTable.getItems().addAll(elementosPrueba);
+    }
+
+    @FXML
+    private void borrarTestData() {
+        ObservableList<ElementoDTO> elementosSeleccionados = elementosTestTable.getSelectionModel().getSelectedItems();
+        elementosPrueba.removeAll(elementosSeleccionados);
+        elementosTestTable.getItems().clear();
+        elementosTestTable.getItems().addAll(elementosPrueba);
+    }
+
+    @FXML
+    private void clasificarDatosPrueba() {
+        throw new UnsupportedOperationException("Metodo no implementado aun");
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         umbralTextField.setText("0");
+        labels.put("tipoNodoLbl", tipoNodoLbl);
+        labels.put("tipoHojaLbl", tipoHojaLbl);
+        labels.put("claseHojaLbl", claseHojaLbl);
+
+        elementosTestTable.getSelectionModel().setSelectionMode(javafx.scene.control.SelectionMode.MULTIPLE);
+
+        canvasArbol.getSelectionHandler().setLabels(labels);
+        canvasArbol.setOnMouseClicked((event) -> {
+            tabPane.getSelectionModel().selectLast();
+        });
+
+        canvas.setOnMouseClicked((event) -> {
+            coordXTestPoint.setText(canvas.traducirX(event.getX()).setScale(4, RoundingMode.HALF_UP).toString());
+            coordYTestPoint.setText(canvas.traducirY(event.getY()).setScale(4, RoundingMode.HALF_UP).toString());
+        });
+
     }
 
     public Stage getStage() {

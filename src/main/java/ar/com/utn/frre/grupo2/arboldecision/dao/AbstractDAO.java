@@ -59,7 +59,7 @@ public abstract class AbstractDAO<T> {
         StreamFactory factory = StreamFactory.newInstance();
         StreamBuilder builder = new StreamBuilder(recordName)
                 .format("delimited")
-                .parser(new DelimitedParserBuilder('\t'))
+                .parser(new DelimitedParserBuilder(','))
                 .addRecord(dtoClass);
         factory.define(builder);
 
