@@ -26,6 +26,7 @@ public class NodoDTO {
     private List<ElementoDTO> elementos;
     private RangosDTO rangosDTO;
     private Integer nivel;
+    private BigDecimal entropia;
     private List<Integer> camino = new ArrayList<>();
 
     public NodoDTO() {
@@ -141,6 +142,12 @@ public class NodoDTO {
         this.camino = camino;
     }
 
+    public BigDecimal getEntropia() {
+        return entropia;
+    }
 
+    public void setEntropia(BigDecimal entropia) {
+        this.entropia = entropia;
+    }
 
 }
