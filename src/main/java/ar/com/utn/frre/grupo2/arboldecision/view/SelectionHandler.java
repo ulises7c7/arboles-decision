@@ -9,6 +9,7 @@ package ar.com.utn.frre.grupo2.arboldecision.view;
  *
  * @author ulises
  */
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -87,6 +88,8 @@ public class SelectionHandler {
                 labels.get("claseHojaLbl").setText(nodoView.getNodoDTO().getEsHoja()
                         ? nodoView.getNodoDTO().getClaseHoja().toString()
                         : "-");
+
+                labels.get("entropiaLbl").setText(nodoView.getNodoDTO().getEntropia().setScale(4, RoundingMode.HALF_UP).toString());
 
                 return true;
             } else {

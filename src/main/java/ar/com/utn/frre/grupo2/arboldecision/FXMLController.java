@@ -66,6 +66,8 @@ public class FXMLController implements Initializable {
     @FXML
     private Label claseHojaLbl;
     @FXML
+    private Label entropiaLbl;
+    @FXML
     private Label tipoHojaLbl;
     @FXML
     private Label tipoNodoLbl;
@@ -102,6 +104,7 @@ public class FXMLController implements Initializable {
         }
 
         recargarTabla();
+        nodoRaiz = null;
         canvas.setNodoRaiz(nodoRaiz);
         canvas.setElementos(elementos);
         canvas.redraw();
@@ -160,6 +163,7 @@ public class FXMLController implements Initializable {
         labels.put("tipoNodoLbl", tipoNodoLbl);
         labels.put("tipoHojaLbl", tipoHojaLbl);
         labels.put("claseHojaLbl", claseHojaLbl);
+        labels.put("entropiaLbl", entropiaLbl);
 
         elementosTestTable.getSelectionModel().setSelectionMode(javafx.scene.control.SelectionMode.MULTIPLE);
 

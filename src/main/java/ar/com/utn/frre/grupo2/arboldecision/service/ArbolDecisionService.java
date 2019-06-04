@@ -321,6 +321,7 @@ public class ArbolDecisionService {
     }
 
     public void decisionTree(List<ElementoDTO> elementos, RangosDTO rangos, NodoDTO nodo, BigDecimal umbral) {
+        nodo.setEntropia(impurityEval1(elementos));
         if (claseTodosElementos(elementos) != null) {
             Integer claseHoja = claseTodosElementos(elementos);
             nodo.setEsHoja(Boolean.TRUE);

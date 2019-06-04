@@ -206,6 +206,12 @@
                                                 <Label  fx:id="claseHojaLbl" HBox.hgrow="ALWAYS"   maxWidth="Infinity"
                                                         GridPane.columnIndex="1" GridPane.columnSpan="1" GridPane.rowIndex="2"
                                                         text="" />
+                                                <Label HBox.hgrow="ALWAYS"   maxWidth="Infinity"
+                                                       GridPane.columnIndex="0" GridPane.columnSpan="1" GridPane.rowIndex="3"
+                                                       text="Entropia" />
+                                                <Label  fx:id="entropiaLbl" HBox.hgrow="ALWAYS"   maxWidth="Infinity"
+                                                        GridPane.columnIndex="1" GridPane.columnSpan="1" GridPane.rowIndex="3"
+                                                        text="" />
 
 
 
