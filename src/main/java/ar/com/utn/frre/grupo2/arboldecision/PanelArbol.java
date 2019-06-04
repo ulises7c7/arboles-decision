@@ -71,11 +71,11 @@ public class PanelArbol extends Pane {
         if (nodo.getPadre() != null) {
 
             //Centro nodo padre
-            double x1 = calcularNodoCoordX(nodo.getPadre().getCamino());
+            double x1 = calcularNodoCoordX(nodo.getPadre().getCamino(), nivelesCount);
             double y1 = calcularNodoCoordY(nodo.getPadre().getNivel(), nivelesCount);
 
             //centro nodo actual
-            double x2 = calcularNodoCoordX(nodo.getCamino());
+            double x2 = calcularNodoCoordX(nodo.getCamino(), nivelesCount);
             double y2 = calcularNodoCoordY(nodo.getNivel(), nivelesCount);
 
             //Posicion del texto, si la rama va a la izquierda o derecha
@@ -116,7 +116,7 @@ public class PanelArbol extends Pane {
 
     private void dibujarNodos(NodoDTO nodo) {
         dibujarNodo(calcularNodoCoordX(
-                nodo.getCamino()),
+                nodo.getCamino(), nivelesCount),
                 calcularNodoCoordY(nodo.getNivel(), nivelesCount),
                 nodo.getEsHoja() ? nodo.getClaseHoja() == null ? "?" : nodo.getClaseHoja().toString() : null, nodo);
         if (nodo.getHijos() != null && !nodo.getHijos().isEmpty()) {
@@ -167,12 +167,29 @@ public class PanelArbol extends Pane {
     }
 
     private double calcularNodoCoordY(Integer nivel, Integer nivelesCount) {
-        return (getInnerHeightPane() / nivelesCount) * (nivel - 0.5);
+
+        double distanciaMinima = 20;
+
+        if (getInnerHeightPane() / nivelesCount < distanciaMinima) {
+            //distancia fija (minima)
+            return 20.0 + nivel * distanciaMinima;
+        } else {
+            //proporcional al tamaño del panel y la cantidad de niveles
+            return (getInnerHeightPane() / nivelesCount) * (nivel - 0.5);
+        }
+
     }
 
-    private double calcularNodoCoordX(List<Integer> desplazamientos) {
+    private double calcularNodoCoordX(List<Integer> desplazamientos, int nivelesCount) {
         double coordX = getInnerWidthPane() / 2;
-        double offsetX = getInnerWidthPane() / 2;
+        double distanciaMinima = 100;
+        double offsetX;
+        if ((getInnerWidthPane() / (2 ^ (nivelesCount - 1))) > distanciaMinima) {
+            offsetX = getInnerWidthPane() / 2;
+        } else {
+            offsetX = distanciaMinima * (2 ^ (nivelesCount + 1));
+        }
+
         for (Integer desp : desplazamientos) {
             offsetX = offsetX / 2;
             coordX = coordX + (desp * offsetX);
