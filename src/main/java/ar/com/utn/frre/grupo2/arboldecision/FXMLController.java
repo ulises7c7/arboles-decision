@@ -14,9 +14,11 @@ import java.math.RoundingMode;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -103,11 +105,26 @@ public class FXMLController implements Initializable {
             }
         }
 
+        Set<String> clases = new HashSet<>();
+
+        for (ElementoDTO elemento : elementos) {
+            clases.add(elemento.getClaseString());
+        }
+        ClaseHandler.getInstancia().definirClases(clases);
+
+        for (ElementoDTO elemento : elementos) {
+            elemento.setClase(
+                    ClaseHandler.getInstancia().getClaseNumero(
+                            elemento.getClaseString()));
+        }
+
         recargarTabla();
         nodoRaiz = null;
         canvas.setNodoRaiz(nodoRaiz);
         canvas.setElementos(elementos);
         canvas.redraw();
+        canvasArbol.setNodoRaiz(nodoRaiz);
+        canvasArbol.redraw();
     }
 
     @FXML

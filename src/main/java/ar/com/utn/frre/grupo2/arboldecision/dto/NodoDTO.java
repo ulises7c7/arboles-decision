@@ -20,6 +20,7 @@ public class NodoDTO {
     private Boolean esHoja;
     private Boolean esHojaPura;
     private Integer claseHoja;
+    private String claseHojaString;
     private BigDecimal valorParticion;
     private Integer ejeParticion;
     private Boolean esRamaMenor;
@@ -148,6 +149,14 @@ public class NodoDTO {
 
     public void setEntropia(BigDecimal entropia) {
         this.entropia = entropia;
+    }
+
+    public String getClaseHojaString() {
+        return claseHojaString;
+    }
+
+    public void setClaseHojaString(String claseHojaString) {
+        this.claseHojaString = claseHojaString;
     }
 
 }

@@ -26,6 +26,7 @@ public class ElementoDTO {
     @Field(at = 1)
     private BigDecimal coordY;
     @Field(at = 2)
+    private String claseString;
     private Integer clase;
 
     private String resultadoClasificacion;
@@ -60,6 +61,14 @@ public class ElementoDTO {
 
     public void setResultadoClasificacion(String resultadoClasificacion) {
         this.resultadoClasificacion = resultadoClasificacion;
+    }
+
+    public String getClaseString() {
+        return claseString;
+    }
+
+    public void setClaseString(String claseString) {
+        this.claseString = claseString;
     }
 
     @Override

@@ -86,7 +86,7 @@ public class SelectionHandler {
                         ? nodoView.getNodoDTO().getEsHojaPura() ? "Pura" : "Impura"
                         : "-");
                 labels.get("claseHojaLbl").setText(nodoView.getNodoDTO().getEsHoja()
-                        ? nodoView.getNodoDTO().getClaseHoja().toString()
+                        ? nodoView.getNodoDTO().getClaseHojaString()
                         : "-");
 
                 labels.get("entropiaLbl").setText(nodoView.getNodoDTO().getEntropia().setScale(4, RoundingMode.HALF_UP).toString());

@@ -5,6 +5,7 @@
  */
 package ar.com.utn.frre.grupo2.arboldecision.service;
 
+import ar.com.utn.frre.grupo2.arboldecision.ClaseHandler;
 import ar.com.utn.frre.grupo2.arboldecision.dto.ElementoDTO;
 import ar.com.utn.frre.grupo2.arboldecision.dto.NodoDTO;
 import ar.com.utn.frre.grupo2.arboldecision.dto.RangosDTO;
@@ -327,6 +328,7 @@ public class ArbolDecisionService {
             nodo.setEsHoja(Boolean.TRUE);
             nodo.setEsHojaPura(Boolean.TRUE);
             nodo.setClaseHoja(claseHoja);
+            nodo.setClaseHojaString(ClaseHandler.getInstancia().getClaseNombre(nodo.getClaseHoja()));
 
         } else if (!rangos.esPosibleParticionarEnX() && !rangos.esPosibleParticionarEnY()) {
             // Caso A = vacio
@@ -337,6 +339,7 @@ public class ArbolDecisionService {
             nodo.setEsHoja(Boolean.TRUE);
             nodo.setEsHojaPura(Boolean.FALSE);
             nodo.setClaseHoja(claseMasFrecuente(elementos));
+            nodo.setClaseHojaString(ClaseHandler.getInstancia().getClaseNombre(nodo.getClaseHoja()));
 
         } else {
 
@@ -377,6 +380,7 @@ public class ArbolDecisionService {
                 nodo.setEsHoja(Boolean.TRUE);
                 nodo.setEsHojaPura(Boolean.FALSE);
                 nodo.setClaseHoja(claseMasFrecuente(elementos));
+                nodo.setClaseHojaString(ClaseHandler.getInstancia().getClaseNombre(nodo.getClaseHoja()));
             } else {
                 nodo.setEsHoja(Boolean.FALSE);
                 nodo.setHijos(new ArrayList<>());

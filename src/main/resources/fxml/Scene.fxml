@@ -68,7 +68,7 @@
 
                                                         <TableColumn text="Clase">
                                                             <cellValueFactory>
-                                                                <PropertyValueFactory property="clase" />
+                                                                <PropertyValueFactory property="claseString" />
                                                             </cellValueFactory>
                                                         </TableColumn>
                                                     </columns>

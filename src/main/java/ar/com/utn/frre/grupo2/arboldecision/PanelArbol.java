@@ -118,7 +118,7 @@ public class PanelArbol extends Pane {
         dibujarNodo(calcularNodoCoordX(
                 nodo.getCamino()),
                 calcularNodoCoordY(nodo.getNivel(), nivelesCount),
-                nodo.getEsHoja() ? nodo.getClaseHoja() == null ? "?" : nodo.getClaseHoja().toString() : null, nodo);
+                nodo.getEsHoja() ? nodo.getClaseHoja() == null ? "?" : nodo.getClaseHojaString() : null, nodo.getClaseHoja(), nodo);
         if (nodo.getHijos() != null && !nodo.getHijos().isEmpty()) {
             for (NodoDTO hijo : nodo.getHijos()) {
                 dibujarNodos(hijo);
@@ -133,7 +133,7 @@ public class PanelArbol extends Pane {
         getChildren().add(linea);
     }
 
-    private void dibujarNodo(double xCentro, double yCentro, String label, NodoDTO nodoDTO) {
+    private void dibujarNodo(double xCentro, double yCentro, String label, Integer clase, NodoDTO nodoDTO) {
 
         double radioNodo = diametroNodo / 2;
 
@@ -150,7 +150,7 @@ public class PanelArbol extends Pane {
                 text.setStroke(SolarizedColors.getColorByClase(0));
 
             } else {
-                text.setStroke(SolarizedColors.getColorByClase(Integer.valueOf(label)));
+                text.setStroke(SolarizedColors.getColorByClase(clase));
             }
 
             getChildren().add(text);
