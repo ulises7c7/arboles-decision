@@ -59,7 +59,7 @@ public abstract class AbstractDAO<T> {
         StreamFactory factory = StreamFactory.newInstance();
         StreamBuilder builder = new StreamBuilder(recordName)
                 .format("delimited")
-                .parser(new DelimitedParserBuilder(','))
+                .parser(new DelimitedParserBuilder(';'))
                 .addRecord(dtoClass);
         factory.define(builder);
 
@@ -67,6 +67,7 @@ public abstract class AbstractDAO<T> {
 
         BeanReader in = factory.createReader(recordName, archivo);
         Object registro;
+        in.skip(1);
         while ((registro = in.read()) != null) {
             T dto = (T) registro;
             dtoList.add(dto);
