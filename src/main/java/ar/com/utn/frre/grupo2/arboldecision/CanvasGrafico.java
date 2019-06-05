@@ -11,6 +11,7 @@ import ar.com.utn.frre.grupo2.arboldecision.service.ArbolDecisionService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
@@ -36,6 +37,7 @@ public class CanvasGrafico extends Pane {
 
     private NodoDTO nodoRaiz;
     private List<ElementoDTO> elementos;
+    private final List<ElementoDTO> elementosPrueba = new ArrayList<>();
 
     public CanvasGrafico() {
         super();
@@ -172,6 +174,7 @@ public class CanvasGrafico extends Pane {
         dibujarParticiones(nodoRaiz);
 
         dibujarPuntos();
+        dibujarPuntosPrueba();
 
     }
 
@@ -187,6 +190,17 @@ public class CanvasGrafico extends Pane {
     private void pintarFondo() {
         gc.setFill(SolarizedColors.BASE03);
         gc.fillRect(0, 0, this.getWidth(), this.getHeight());
+    }
+
+    private void dibujarPuntosPrueba() {
+        for (ElementoDTO elemento : elementosPrueba) {
+            Paint color = elemento.getClase() == null ? Color.WHITE : SolarizedColors.getColorByClase(elemento.getClase());
+            dibujarPunto(elemento.getCoordX(), elemento.getCoordY(), color);
+        }
+    }
+
+    public List<ElementoDTO> getElementosPrueba() {
+        return elementosPrueba;
     }
 
     public NodoDTO getNodoRaiz() {

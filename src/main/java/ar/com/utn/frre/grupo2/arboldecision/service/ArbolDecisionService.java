@@ -403,4 +403,31 @@ public class ArbolDecisionService {
         }
     }
 
+    public void clasificar(ElementoDTO elemento, NodoDTO nodo) {
+        if (nodo.getEsHoja()) {
+
+            elemento.setClase(nodo.getClaseHoja());
+            elemento.setClaseString(ClaseHandler.getInstancia().getClaseNombre(nodo.getClaseHoja()));
+            if (nodo.getEsHojaPura()) {
+                elemento.setResultadoClasificacion("Clasificacion en hoja pura");
+            } else {
+                elemento.setResultadoClasificacion("Clasificacion en hoja impura");
+            }
+
+        } else {
+
+            //Valor del elemento en el eje de particion
+            BigDecimal valorElemento = nodo.getHijos().get(0).getEjeParticion() == EJE_X ? elemento.getCoordX() : elemento.getCoordY();
+            NodoDTO hijoMenor = nodo.getHijos().get(0).getEsRamaMenor() ? nodo.getHijos().get(0) : nodo.getHijos().get(1);
+            NodoDTO hijoMayor = nodo.getHijos().get(0).getEsRamaMenor() ? nodo.getHijos().get(1) : nodo.getHijos().get(0);
+
+            if (valorElemento.compareTo(nodo.getHijos().get(0).getValorParticion()) == -1) {
+                clasificar(elemento, hijoMenor);
+            } else {
+                clasificar(elemento, hijoMayor);
+            }
+
+        }
+    }
+
 }

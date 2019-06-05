@@ -124,6 +124,9 @@ public class FXMLController implements Initializable {
         canvas.setElementos(elementos);
         canvas.redraw();
         canvasArbol.setNodoRaiz(nodoRaiz);
+        canvas.getElementosPrueba().clear();
+        elementosTestTable.getItems().clear();
+        elementosPrueba.clear();
         canvasArbol.redraw();
     }
 
@@ -154,11 +157,12 @@ public class FXMLController implements Initializable {
 
         elementoTest.setCoordX(new BigDecimal(coordXTestPoint.getText()));
         elementoTest.setCoordY(new BigDecimal(coordYTestPoint.getText()));
-        elementoTest.setClase(Integer.valueOf(claseTestPoint.getText()));
 
         elementosPrueba.add(elementoTest);
         elementosTestTable.getItems().clear();
         elementosTestTable.getItems().addAll(elementosPrueba);
+        canvas.getElementosPrueba().add(elementoTest);
+        canvas.redraw();
     }
 
     @FXML
@@ -167,11 +171,29 @@ public class FXMLController implements Initializable {
         elementosPrueba.removeAll(elementosSeleccionados);
         elementosTestTable.getItems().clear();
         elementosTestTable.getItems().addAll(elementosPrueba);
+        canvas.getElementosPrueba().removeAll(elementosSeleccionados);
+        canvas.redraw();
     }
 
     @FXML
     private void clasificarDatosPrueba() {
-        throw new UnsupportedOperationException("Metodo no implementado aun");
+
+        if (nodoRaiz == null) {
+
+            notifier.notify(NotificationBuilder.create()
+                    .title(mensajes.getString("clasificacion_error_titulo"))
+                    .message(mensajes.getString("clasificacion_error_mensaje"))
+                    .image(Notification.ERROR_ICON).build());
+
+        } else {
+
+            for (ElementoDTO elemento : elementosPrueba) {
+                arbolesService.clasificar(elemento, nodoRaiz);
+            }
+            elementosTestTable.getItems().clear();
+            elementosTestTable.getItems().addAll(elementosPrueba);
+            canvas.redraw();
+        }
     }
 
     @Override

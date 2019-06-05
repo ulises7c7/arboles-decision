@@ -110,12 +110,16 @@
                                                 <TextField fx:id="coordYTestPoint" promptText="Coord y"
                                                            HBox.hgrow="ALWAYS"  maxWidth="Infinity"
                                                            GridPane.columnIndex="1" GridPane.columnSpan="1" GridPane.rowIndex="0" />
-                                                <TextField fx:id="claseTestPoint" promptText="clase"
-                                                           HBox.hgrow="ALWAYS"  maxWidth="Infinity"
-                                                           GridPane.columnIndex="2" GridPane.columnSpan="1" GridPane.rowIndex="0" />
+
                                                 <Button mnemonicParsing="false" onAction="#addTestPoint" text="Agregar"
                                                         HBox.hgrow="ALWAYS"  maxWidth="Infinity"
-                                                        GridPane.columnIndex="3" GridPane.columnSpan="1" GridPane.rowIndex="0"/>
+                                                        GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="0">
+
+                                                    <tooltip>
+                                                        <Tooltip text="Para agregar un punto de prueba ingrese las coordenadas manualmente y presione agregar. O defina las coordenadas haciendo clic en el plano y luego presione agregar." />
+                                                    </tooltip>
+
+                                                </Button>
 
 
 
@@ -136,7 +140,7 @@
 
                                                         <TableColumn text="Clase">
                                                             <cellValueFactory>
-                                                                <PropertyValueFactory property="clase" />
+                                                                <PropertyValueFactory property="claseString" />
                                                             </cellValueFactory>
                                                         </TableColumn>
 
