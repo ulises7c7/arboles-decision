@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ar.com.utn.frre.grupo2</groupId>
-    <artifactId>arbol-decision</artifactId>
+    <artifactId>2decision-tree</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>arbol-decision</name>
+    <name>2DecisionTree</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
