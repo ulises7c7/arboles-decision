@@ -7,7 +7,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-
 public class MainApp extends Application {
 
     @Override
@@ -22,7 +21,7 @@ public class MainApp extends Application {
         Scene scene = new Scene(root);
         scene.getStylesheets().add("/styles/Styles.css");
 
-        stage.setTitle("Arboles de decisión");
+        stage.setTitle("2DecisionTree");
         stage.setScene(scene);
         stage.show();
     }

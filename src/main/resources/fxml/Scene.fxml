@@ -46,9 +46,13 @@
                                                        text="Umbral" />
 
 
-                                                <TextField fx:id="umbralTextField" promptText="Umbral"
+                                                <TextField fx:id="umbralTextField" promptText="Umbral (ej: 0.25)"
                                                            HBox.hgrow="ALWAYS"  maxWidth="Infinity"
-                                                           GridPane.columnIndex="1" GridPane.columnSpan="1" GridPane.rowIndex="0" />
+                                                           GridPane.columnIndex="1" GridPane.columnSpan="1" GridPane.rowIndex="0" >
+                                                    <tooltip>
+                                                        <Tooltip text="Ingrese valores entre 0.00 y 1.00 para el umbral" />
+                                                    </tooltip>
+                                                </TextField>
 
 
                                                 <TableView fx:id="elementosTable"  GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="1">
@@ -249,14 +253,10 @@
                         <Menu mnemonicParsing="false" text="Archivo">
                             <items>
                                 <MenuItem mnemonicParsing="false" onAction="#importarElementos"  text="Importar datos de entrenamiento" />
-                                <MenuItem mnemonicParsing="false" text="Cerrar" />
+                                <MenuItem mnemonicParsing="false" onAction="#cerrarAplicacion"   text="Cerrar" />
                             </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" text="Ayuda">
-                            <items>
-                                <MenuItem mnemonicParsing="false" text="Acerca de" />
-                            </items>
-                        </Menu>
+
                     </menus>
                 </MenuBar>
                 <ToolBar>

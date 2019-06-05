@@ -132,23 +132,31 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void procesarElementos() {
-        RangosDTO rangos = arbolesService.generarRangoInicial(elementos);
-        nodoRaiz = new NodoDTO();
-        nodoRaiz.setElementos(elementos);
-        nodoRaiz.setNivel(1);
-        nodoRaiz.setRangosDTO(rangos);
 
-        BigDecimal umbral = new BigDecimal(umbralTextField.getText());
+        if (elementos == null || elementos.isEmpty()) {
+            notifier.notify(NotificationBuilder.create()
+                    .title(mensajes.getString("dataset_vacio_error_titulo"))
+                    .message(mensajes.getString("dataset_vacio_error_mensaje"))
+                    .image(Notification.ERROR_ICON).build());
+        } else {
 
-        arbolesService.decisionTree(elementos, rangos, nodoRaiz, umbral);
+            RangosDTO rangos = arbolesService.generarRangoInicial(elementos);
+            nodoRaiz = new NodoDTO();
+            nodoRaiz.setElementos(elementos);
+            nodoRaiz.setNivel(1);
+            nodoRaiz.setRangosDTO(rangos);
 
-        canvas.setNodoRaiz(nodoRaiz);
-        canvas.setElementos(elementos);
-        canvas.redraw();
+            BigDecimal umbral = new BigDecimal(umbralTextField.getText());
 
-        canvasArbol.setNodoRaiz(nodoRaiz);
-        canvasArbol.redraw();
-        System.out.println("Proceso finalizado!");
+            arbolesService.decisionTree(elementos, rangos, nodoRaiz, umbral);
+
+            canvas.setNodoRaiz(nodoRaiz);
+            canvas.setElementos(elementos);
+            canvas.redraw();
+
+            canvasArbol.setNodoRaiz(nodoRaiz);
+            canvasArbol.redraw();
+        }
     }
 
     @FXML
@@ -173,6 +181,11 @@ public class FXMLController implements Initializable {
         elementosTestTable.getItems().addAll(elementosPrueba);
         canvas.getElementosPrueba().removeAll(elementosSeleccionados);
         canvas.redraw();
+    }
+
+    @FXML
+    private void cerrarAplicacion() {
+        getStage().close();
     }
 
     @FXML
