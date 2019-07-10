@@ -5,7 +5,6 @@
  */
 package ar.com.utn.frre.grupo2.arboldecision.view;
 
-import ar.com.utn.frre.grupo2.arboldecision.SolarizedColors;
 import ar.com.utn.frre.grupo2.arboldecision.dto.NodoDTO;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;

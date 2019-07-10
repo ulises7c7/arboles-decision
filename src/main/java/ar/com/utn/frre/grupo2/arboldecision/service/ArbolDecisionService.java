@@ -403,6 +403,114 @@ public class ArbolDecisionService {
         }
     }
 
+    public void decisionTreeGainRatio(List<ElementoDTO> elementos, RangosDTO rangos, NodoDTO nodo, BigDecimal umbral) {
+        nodo.setEntropia(impurityEval1(elementos));
+        if (claseTodosElementos(elementos) != null) {
+            Integer claseHoja = claseTodosElementos(elementos);
+            nodo.setEsHoja(Boolean.TRUE);
+            nodo.setEsHojaPura(Boolean.TRUE);
+            nodo.setClaseHoja(claseHoja);
+            nodo.setClaseHojaString(ClaseHandler.getInstancia().getClaseNombre(nodo.getClaseHoja()));
+
+        } else if (!rangos.esPosibleParticionarEnX() && !rangos.esPosibleParticionarEnY()) {
+            // Caso A = vacio
+            // T hoja de clase cj, con cj = clase mas frecuente en D
+
+            // Este caso se va a dar cuando haya varios puntos de
+            // distintas clases en la misma coordenada
+            nodo.setEsHoja(Boolean.TRUE);
+            nodo.setEsHojaPura(Boolean.FALSE);
+            nodo.setClaseHoja(claseMasFrecuente(elementos));
+            nodo.setClaseHojaString(ClaseHandler.getInstancia().getClaseNombre(nodo.getClaseHoja()));
+
+        } else {
+
+            BigDecimal valorDivision = null;
+            BigDecimal tasaGananciaMejorParticion = null;
+            BigDecimal entropiaMejorParticion = null;
+            Integer ejeDivision = null;
+
+            BigDecimal entropiaTotal = impurityEval1(elementos);
+
+            //Obtengo la mejor particion para el eje X
+            for (int i = 1; i < rangos.getParticionesX().size() - 1; i++) {
+                BigDecimal particionX = rangos.getParticionesX().get(i);
+                BigDecimal entropiaParticion = impurityEval2(elementos, particionX, EJE_X);
+                BigDecimal gananciaParticion = entropiaTotal.subtract(entropiaParticion);
+                BigDecimal tasaGananciaParticion = tasaGanancia(gananciaParticion, elementos.size(),
+                        particionar(elementos, particionX, EJE_X, Boolean.TRUE).size()
+                );
+
+                if (tasaGananciaMejorParticion == null
+                        || tasaGananciaParticion.compareTo(tasaGananciaMejorParticion) == 1) {
+                    tasaGananciaMejorParticion = tasaGananciaParticion;
+                    entropiaMejorParticion = entropiaParticion;
+                    valorDivision = particionX;
+                    ejeDivision = EJE_X;
+                }
+            }
+
+            //Obtengo la menor particion para el eje Y
+            for (int i = 1; i < rangos.getParticionesY().size() - 1; i++) {
+                BigDecimal particionY = rangos.getParticionesY().get(i);
+                BigDecimal entropiaParticion = impurityEval2(elementos, particionY, EJE_Y);
+                BigDecimal gananciaParticion = entropiaTotal.subtract(entropiaParticion);
+                BigDecimal tasaGananciaParticion = tasaGanancia(gananciaParticion, elementos.size(),
+                        particionar(elementos, particionY, EJE_Y, Boolean.TRUE).size()
+                );
+
+                if (tasaGananciaMejorParticion == null
+                        || tasaGananciaParticion.compareTo(tasaGananciaMejorParticion) == 1) {
+                    tasaGananciaMejorParticion = tasaGananciaParticion;
+                    entropiaMejorParticion = entropiaParticion;
+                    valorDivision = particionY;
+                    ejeDivision = EJE_Y;
+                }
+            }
+
+            if (entropiaTotal.subtract(entropiaMejorParticion).compareTo(umbral) == -1) {
+                //Se hace T nodo hoja de clase cj mas frecuente
+                nodo.setEsHoja(Boolean.TRUE);
+                nodo.setEsHojaPura(Boolean.FALSE);
+                nodo.setClaseHoja(claseMasFrecuente(elementos));
+                nodo.setClaseHojaString(ClaseHandler.getInstancia().getClaseNombre(nodo.getClaseHoja()));
+            } else {
+                nodo.setEsHoja(Boolean.FALSE);
+                nodo.setHijos(new ArrayList<>());
+
+                //Tratar rama 1
+                List<ElementoDTO> particion1 = particionar(elementos, valorDivision, ejeDivision, Boolean.TRUE);
+                RangosDTO rangosParticion1 = generarRangoParticion(rangos, valorDivision, ejeDivision, Boolean.TRUE, particion1);
+                NodoDTO nodoParticion1 = new NodoDTO(nodo, valorDivision, ejeDivision, Boolean.TRUE, particion1, rangosParticion1);
+                nodo.getHijos().add(nodoParticion1);
+                decisionTreeGainRatio(particion1, rangosParticion1, nodoParticion1, umbral);
+
+                //Tratar rama 2
+                List<ElementoDTO> particion2 = particionar(elementos, valorDivision, ejeDivision, Boolean.FALSE);
+                RangosDTO rangosParticion2 = generarRangoParticion(rangos, valorDivision, ejeDivision, Boolean.FALSE, particion2);
+                NodoDTO nodoParticion2 = new NodoDTO(nodo, valorDivision, ejeDivision, Boolean.FALSE, particion2, rangosParticion2);
+                nodo.getHijos().add(nodoParticion2);
+                decisionTreeGainRatio(particion2, rangosParticion2, nodoParticion2, umbral);
+            }
+
+        }
+    }
+
+    private BigDecimal tasaGanancia(BigDecimal ganancia, Integer totalElementos, Integer elementosParticion) {
+
+        BigDecimal probabilidadParticion1 = new BigDecimal(elementosParticion)
+                .divide(new BigDecimal(totalElementos), 4, RoundingMode.HALF_UP);
+        BigDecimal probabilidadParticion2 = new BigDecimal(totalElementos - elementosParticion)
+                .divide(new BigDecimal(totalElementos), 4, RoundingMode.HALF_UP);
+
+        BigDecimal denominador = probabilidadParticion1.multiply(logartimoBase2(probabilidadParticion1)).add(
+                probabilidadParticion2.multiply(logartimoBase2(probabilidadParticion2))
+        );
+
+        return ganancia.divide(denominador.negate(), 4, RoundingMode.HALF_UP);
+
+    }
+
     public void clasificar(ElementoDTO elemento, NodoDTO nodo) {
         if (nodo.getEsHoja()) {
 

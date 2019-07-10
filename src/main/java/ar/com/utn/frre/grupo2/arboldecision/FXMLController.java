@@ -5,6 +5,14 @@ import ar.com.utn.frre.grupo2.arboldecision.dto.ElementoDTO;
 import ar.com.utn.frre.grupo2.arboldecision.dto.NodoDTO;
 import ar.com.utn.frre.grupo2.arboldecision.dto.RangosDTO;
 import ar.com.utn.frre.grupo2.arboldecision.service.ArbolDecisionService;
+import ar.com.utn.frre.grupo2.arboldecision.view.ArbolPane;
+import ar.com.utn.frre.grupo2.arboldecision.view.CanvasGrafico;
+import ar.com.utn.frre.grupo2.arboldecision.view.SelectionListener;
+import com.mxgraph.model.mxCell;
+import com.mxgraph.util.mxEvent;
+import com.mxgraph.util.mxEventObject;
+import com.mxgraph.util.mxEventSource;
+import com.mxgraph.view.mxGraphSelectionModel;
 import eu.hansolo.enzo.notification.Notification;
 import eu.hansolo.enzo.notification.NotificationBuilder;
 import eu.hansolo.enzo.notification.NotifierBuilder;
@@ -24,6 +32,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
@@ -74,18 +83,26 @@ public class FXMLController implements Initializable {
     @FXML
     private Label tipoNodoLbl;
     @FXML
-    private PanelArbol canvasArbol;
+    private ArbolPane arbolPane;
     @FXML
     private TabPane tabPane;
+    @FXML
+    private ComboBox<String> criterioInformacion;
     private final Map<String, Label> labels = new HashMap<>();
+    private File initialDirectory = null;
 
     @FXML
     private void importarElementos() {
 
         FileChooser fileChooser = new FileChooser();
+        if (initialDirectory != null) {
+            fileChooser.setInitialDirectory(initialDirectory);
+        }
+
         fileChooser.setTitle(mensajes.getString("titulo_file_chooser"));
         File archivo = fileChooser.showOpenDialog(this.getStage());
         if (archivo != null) {
+            initialDirectory = archivo.getParentFile();
             elementos.clear();
             try {
                 elementos.addAll(elementosDAO.obtenerDatosCSV(archivo));
@@ -123,11 +140,12 @@ public class FXMLController implements Initializable {
         canvas.setNodoRaiz(nodoRaiz);
         canvas.setElementos(elementos);
         canvas.redraw();
-        canvasArbol.setNodoRaiz(nodoRaiz);
+
         canvas.getElementosPrueba().clear();
         elementosTestTable.getItems().clear();
         elementosPrueba.clear();
-        canvasArbol.redraw();
+        arbolPane.clear();
+
     }
 
     @FXML
@@ -148,14 +166,17 @@ public class FXMLController implements Initializable {
 
             BigDecimal umbral = new BigDecimal(umbralTextField.getText());
 
-            arbolesService.decisionTree(elementos, rangos, nodoRaiz, umbral);
+            if (criterioInformacion.getSelectionModel().getSelectedIndex() == 0) {
+                arbolesService.decisionTree(elementos, rangos, nodoRaiz, umbral);
+            } else {
+                arbolesService.decisionTreeGainRatio(elementos, rangos, nodoRaiz, umbral);
+            }
 
             canvas.setNodoRaiz(nodoRaiz);
             canvas.setElementos(elementos);
             canvas.redraw();
 
-            canvasArbol.setNodoRaiz(nodoRaiz);
-            canvasArbol.redraw();
+            arbolPane.drawArbol(nodoRaiz);
         }
     }
 
@@ -212,6 +233,8 @@ public class FXMLController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         umbralTextField.setText("0");
+
+        criterioInformacion.getSelectionModel().select(0);
         labels.put("tipoNodoLbl", tipoNodoLbl);
         labels.put("tipoHojaLbl", tipoHojaLbl);
         labels.put("claseHojaLbl", claseHojaLbl);
@@ -219,9 +242,19 @@ public class FXMLController implements Initializable {
 
         elementosTestTable.getSelectionModel().setSelectionMode(javafx.scene.control.SelectionMode.MULTIPLE);
 
-        canvasArbol.getSelectionHandler().setLabels(labels);
-        canvasArbol.setOnMouseClicked((event) -> {
-            tabPane.getSelectionModel().selectLast();
+        arbolPane.getJgxAdapter().getSelectionModel().addListener(mxEvent.CHANGE, new SelectionListener(labels));
+        arbolPane.getJgxAdapter().getSelectionModel().addListener(mxEvent.CHANGE, new mxEventSource.mxIEventListener() {
+
+            @Override
+            public void invoke(Object sender, mxEventObject evt) {
+
+                mxGraphSelectionModel sm = (mxGraphSelectionModel) sender;
+                mxCell cell = (mxCell) sm.getCell();
+                if (cell != null && cell.isVertex()) {
+                    tabPane.getSelectionModel().selectLast();
+                }
+            }
+
         });
 
         canvas.setOnMouseClicked((event) -> {

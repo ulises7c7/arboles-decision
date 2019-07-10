@@ -2,8 +2,8 @@
 
 <?import java.lang.*?>
 <?import java.util.*?>
-<?import ar.com.utn.frre.grupo2.arboldecision.CanvasGrafico?>
-<?import ar.com.utn.frre.grupo2.arboldecision.PanelArbol?>
+<?import ar.com.utn.frre.grupo2.arboldecision.view.CanvasGrafico?>
+<?import ar.com.utn.frre.grupo2.arboldecision.view.ArbolPane?>
 <?import javafx.scene.*?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.*?>
@@ -16,7 +16,7 @@
 
 <BorderPane fx:controller="ar.com.utn.frre.grupo2.arboldecision.FXMLController" id="BorderPane"
             maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="600.0" prefWidth="1000.0" xmlns:fx="http://javafx.com/fxml">
+            prefHeight="650.0" prefWidth="1200.0" xmlns:fx="http://javafx.com/fxml">
 
     <!--    <bottom>
         <Label alignment="CENTER" maxHeight="1.7976931348623157E308"
@@ -25,11 +25,11 @@
                BorderPane.alignment="CENTER" />
     </bottom>-->
     <center>
-        <SplitPane dividerPositions="0.3492462311557789" focusTraversable="true" prefHeight="160.0" prefWidth="200.0">
+        <SplitPane dividerPositions="0.5" focusTraversable="true" prefHeight="160.0" prefWidth="200.0">
             <items>
-                <SplitPane fx:id="splitPaneInterior" id="SplitPane" dividerPositions="0.6088328075709779" orientation="VERTICAL">
+                <SplitPane fx:id="splitPaneInterior" id="SplitPane" dividerPositions="0.4" orientation="VERTICAL">
                     <items>
-                        <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE">
+                        <TabPane fx:id="tabPane" prefHeight="150.0" prefWidth="200.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE">
                             <tabs>
                                 <Tab text="Entrenamiento">
                                     <content>
@@ -55,7 +55,23 @@
                                                 </TextField>
 
 
-                                                <TableView fx:id="elementosTable"  GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                                                <Label HBox.hgrow="ALWAYS"   maxWidth="Infinity"
+                                                       GridPane.columnIndex="0" GridPane.columnSpan="1" GridPane.rowIndex="1"
+                                                       text="Criterio cálculo información" />
+
+                                                <ComboBox HBox.hgrow="ALWAYS"   maxWidth="Infinity" fx:id="criterioInformacion"
+                                                          GridPane.columnIndex="1" GridPane.columnSpan="1" GridPane.rowIndex="1" >
+                                                    <items>
+                                                        <FXCollections fx:factory="observableArrayList">
+                                                            <String fx:value="Ganancia"/>
+                                                            <String fx:value="Tasa de ganancia"/>
+                                                        </FXCollections>
+                                                    </items>
+
+                                                </ComboBox>
+
+
+                                                <TableView fx:id="elementosTable"  GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2">
 
                                                     <columns>
                                                         <TableColumn text="X">
@@ -85,6 +101,7 @@
                                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" percentWidth="50.0" prefWidth="50.0" />
                                             </columnConstraints>
                                             <rowConstraints>
+                                                <RowConstraints />
                                                 <RowConstraints />
                                                 <RowConstraints />
                                             </rowConstraints>
@@ -241,7 +258,16 @@
                         <CanvasGrafico fx:id="canvas" />
                     </items>
                 </SplitPane>
-                <PanelArbol fx:id="canvasArbol"/>
+
+                <BorderPane  xmlns:fx="http://javafx.com/fxml"    prefHeight="200" prefWidth="320">
+                    <center>
+                        <ArbolPane fx:id="arbolPane"/>
+                    </center>
+                    <bottom>
+                        <Label id="label" fx:id="label"/>
+                    </bottom>
+                </BorderPane>
+
             </items>
         </SplitPane>
     </center>

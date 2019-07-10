@@ -8,12 +8,16 @@ package ar.com.utn.frre.grupo2.arboldecision.dto;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  *
  * @author ulises
  */
 public class NodoDTO {
+
+    private final String uuid = UUID.randomUUID().toString();
 
     private NodoDTO padre;
     private List<NodoDTO> hijos;
@@ -157,6 +161,36 @@ public class NodoDTO {
 
     public void setClaseHojaString(String claseHojaString) {
         this.claseHojaString = claseHojaString;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 59 * hash + Objects.hashCode(this.uuid);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final NodoDTO other = (NodoDTO) obj;
+        if (!Objects.equals(this.uuid, other.uuid)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return esHoja ? (claseHoja == null ? "?" : claseHojaString) : "   ";
     }
 
 }
